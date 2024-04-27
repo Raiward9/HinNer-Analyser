@@ -1,0 +1,12 @@
+ARROW=1
+SLASH=2
+OPERADOR=3
+LPAR=4
+RPAR=5
+NUM=6
+IDENT=7
+WS=8
+'->'=1
+'\\'=2
+'('=4
+')'=5

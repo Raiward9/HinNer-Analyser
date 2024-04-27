@@ -1,8 +1,8 @@
 import sys
 from antlr4 import *
 from hmLexer import hmLexer
-from exprsParser import exprsParser
-from evalVisitor import EvalVisitor
+from hmParser import hmParser
+from hmVisitor import hmVisitor
 
 if __name__ == "__main__":
     if len(sys.argv) != 1: 
@@ -12,11 +12,11 @@ if __name__ == "__main__":
 
     lexer = hmLexer(input_stream)
     token_stream = CommonTokenStream(lexer)
-    parser = exprsParser(token_stream)
+    parser = hmParser(token_stream)
     tree = parser.root()
 
     if parser.getNumberOfSyntaxErrors() == 0:
-        visitor = EvalVisitor()
+        visitor = hmVisitor()
         visitor.visit(tree)
     else:
         print(parser.getNumberOfSyntaxErrors(), 'errors de sintaxi.')
