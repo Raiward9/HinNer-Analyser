@@ -1,25 +1,25 @@
 // Gramàtica per expressions senzilles
 grammar hm;
-root : (statement)*             // letiqueta ja és root
+root : expr            
      ;
 
-statement : expr                            # expressioStmt
-          | funcio                          # funcioStmt
-          ;
-
-expr : LPAR OPERADOR RPAR (IDENT|NUM)+       # operador
-     | LPAR expr RPAR                        # parentesis 
-     | LPAR funcio RPAR (IDENT|NUM)*         # funcioParametres
-     | NUM                                   # numero
-     | IDENT                                 # ident
+expr : LPAR expr RPAR                                  # parentesis                 
+     | (LPAR funcio RPAR | operadorInfix)  (expr)*     # aplicacio
+     | funcio                                          # funcioExpr 
+     | operadorInfix                                   # operadorExpr
+     | NUM                                             # numero
+     | IDENT                                           # ident
      ;
 
-funcio : SLASH IDENT ARROW expr
-        ;                
+funcio: SLASH IDENT ARROW expr
+     ; 
+
+operadorInfix: LPAR SUMA RPAR
+     ; 
 
 ARROW          : '->';
 SLASH          : '\\';
-OPERADOR       : ('+'|'*'|'-'|'/');
+SUMA           : '+';
 LPAR           : '(';
 RPAR           : ')';
 NUM            : [0-9]+ ;

@@ -1,1 +1,1 @@
-antlr4 -Dlanguage=Python3 -no-listener hm.g4
+antlr4 -Dlanguage=Python3 -no-listener -visitor hm.g4
