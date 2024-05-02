@@ -1,34 +1,27 @@
 from hmParser import hmParser
 from hmVisitor import hmVisitor
+from __future__ import annotations
+from dataclasses import dataclass
+
+@dataclass
+class Node:
+    simbol: str
+    child: list
 
 class TreeVisitor(hmVisitor):
-    def __init__(self):
-        self.nivell = 0
+    def visitFuncioAnonima(self, ctx: hmParser.FuncioAnonimaContext):
+        [slash, ident, arrow, expr] = list(ctx.getChildren())
+        fillEsquerre = self.visit(ident)
+        fillDret = self.visit(expr)
+        return Node('λ', [fillEsquerre, fillDret]) 
 
-    def visitSuma(self, ctx):
-        [expressio1, operador, expressio2] = list(ctx.getChildren())
-        print('  ' *  self.nivell + str(operador))
-        self.nivell += 1
-        self.visit(expressio1)
-        self.visit(expressio2)
-        self.nivell -= 1
-
-    def visitProducte(self, ctx: hmParser.ProducteContext):
-        [expressio1, operador, expressio2] = list(ctx.getChildren())
-        print('  ' *  self.nivell + str(operador))
-        self.nivell += 1
-        self.visit(expressio1)
-        self.visit(expressio2)
-        self.nivell -= 1
+    def visitOperadorInfix(self, ctx: hmParser.OperadorInfixContext):
+        return Node('(+)', [])
     
-    def visitPotencia(self, ctx: hmParser.PotenciaContext):
-        [expressio1, operador, expressio2] = list(ctx.getChildren())
-        print('  ' *  self.nivell + str(operador))
-        self.nivell += 1
-        self.visit(expressio1)
-        self.visit(expressio2)
-        self.nivell -= 1
-
-    def visitNumero(self, ctx):
-        [numero] = list(ctx.getChildren())
-        print("  " * self.nivell + numero.getText())
+    def visitNumero(self, ctx: hmParser.NumeroContext):
+        numero = str(ctx.getText())
+        return Node(numero, [])
+    
+    def visitIdent(self, ctx: hmParser.IdentContext):
+        identificador = str(ctx.getText())
+        return Node(identificador, [])
