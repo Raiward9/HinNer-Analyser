@@ -1,21 +1,18 @@
 // Gramàtica per expressions senzilles
 grammar hm;
-root : expr EOF        
+root : expr EOF
      ;
 
 expr : LPAR expr RPAR                                  # parentesis                 
-     | (LPAR funcio RPAR | operadorInfix)  (expr)*     # aplicacio
-     | funcio                                          # funcioExpr 
-     | operadorInfix                                   # operadorExpr
+     | expr expr                                       # aplicacioExpr
+     | abstraccio                                      # abstraccioExpr
      | NUM                                             # numero
      | IDENT                                           # ident
      ;
 
-funcio: SLASH IDENT ARROW expr
-     ; 
-
-operadorInfix: LPAR SUMA RPAR
-     ; 
+abstraccio: SLASH IDENT ARROW expr      # funcioAnonima
+          | LPAR SUMA RPAR              # operadorInfix
+          ;
 
 ARROW          : '->';
 SLASH          : '\\';

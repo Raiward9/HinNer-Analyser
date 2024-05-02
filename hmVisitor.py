@@ -19,18 +19,8 @@ class hmVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by hmParser#aplicacio.
-    def visitAplicacio(self, ctx:hmParser.AplicacioContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by hmParser#funcioExpr.
-    def visitFuncioExpr(self, ctx:hmParser.FuncioExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by hmParser#operadorExpr.
-    def visitOperadorExpr(self, ctx:hmParser.OperadorExprContext):
+    # Visit a parse tree produced by hmParser#aplicacioExpr.
+    def visitAplicacioExpr(self, ctx:hmParser.AplicacioExprContext):
         return self.visitChildren(ctx)
 
 
@@ -39,13 +29,18 @@ class hmVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by hmParser#abstraccioExpr.
+    def visitAbstraccioExpr(self, ctx:hmParser.AbstraccioExprContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by hmParser#ident.
     def visitIdent(self, ctx:hmParser.IdentContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by hmParser#funcio.
-    def visitFuncio(self, ctx:hmParser.FuncioContext):
+    # Visit a parse tree produced by hmParser#funcioAnonima.
+    def visitFuncioAnonima(self, ctx:hmParser.FuncioAnonimaContext):
         return self.visitChildren(ctx)
 
 
