@@ -1,11 +1,10 @@
-import sys
 import streamlit as st
 import graphviz
 
 from antlr4 import *
 from hmLexer import hmLexer
 from hmParser import hmParser
-from hmVisitor import hmVisitor
+from TreeVisitor import TreeVisitor
 
 if __name__ == "__main__":
     input = st.text_input(label='Expressió:')
@@ -19,7 +18,7 @@ if __name__ == "__main__":
         tree = parser.root()
 
         if parser.getNumberOfSyntaxErrors() == 0:
-            visitor = hmVisitor()
+            visitor = TreeVisitor()
             visitor.visit(tree)
         else:
             st.write(str(parser.getNumberOfSyntaxErrors()) +  'errors de sintaxi.')

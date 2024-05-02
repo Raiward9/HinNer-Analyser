@@ -1,6 +1,6 @@
 // Gramàtica per expressions senzilles
 grammar hm;
-root : expr EOF
+root : expr 
      ;
 
 expr : LPAR expr RPAR                                  # parentesis                 
