@@ -14,6 +14,26 @@ class hmVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by hmParser#exprStmt.
+    def visitExprStmt(self, ctx:hmParser.ExprStmtContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by hmParser#definicioStmt.
+    def visitDefinicioStmt(self, ctx:hmParser.DefinicioStmtContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by hmParser#definicio.
+    def visitDefinicio(self, ctx:hmParser.DefinicioContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by hmParser#tipus.
+    def visitTipus(self, ctx:hmParser.TipusContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by hmParser#parentesis.
     def visitParentesis(self, ctx:hmParser.ParentesisContext):
         return self.visitChildren(ctx)

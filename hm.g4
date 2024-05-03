@@ -1,7 +1,17 @@
 // Gramàtica per expressions senzilles
 grammar hm;
-root : expr EOF 
+root : statement EOF 
      ;
+
+statement : expr                        # exprStmt
+          | definicio                   # definicioStmt
+          ; 
+
+definicio : expr DOSPUNTS DOSPUNTS tipus
+          ;
+
+tipus : TIPUS (ARROW TIPUS)* 
+      ;
 
 expr : LPAR expr RPAR                                  # parentesis                 
      | expr expr                                       # aplicacioExpr
@@ -16,9 +26,11 @@ abstraccio: SLASH IDENT ARROW expr      # funcioAnonima
 
 ARROW          : '->';
 SLASH          : '\\';
+DOSPUNTS       : ':';
 SUMA           : '+';
 LPAR           : '(';
 RPAR           : ')';
 NUM            : [0-9]+ ;
-IDENT          : ([A-Z] | [a-z]) (([A-Z] | [a-z]) | [0-9])*;
+TIPUS          : [A-Z]+ ;
+IDENT          : [a-zA-Z] ([a-zA-Z]  | [0-9])* [a-z] ;
 WS             : [ \t\n\r]+ -> skip ;

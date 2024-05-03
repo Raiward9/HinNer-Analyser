@@ -5,7 +5,7 @@ from graphviz import Graph
 
 from antlr4 import *
 from hmLexer import hmLexer
-from hmParser import hmParser
+from hmParser import hmParser   
 from hmVisitor import hmVisitor
 
 @dataclass
@@ -14,9 +14,27 @@ class Node:
     children: list
 
 class TreeVisitor(hmVisitor):
+    def __init__(self):
+        self.symbolsTable = {}
+        print("Crida innit")
+
     def visitRoot(self, ctx:hmParser.RootContext):
         [expr1, _] = list(ctx.getChildren())
         return self.visit(expr1)
+    
+    def visitExprStmt(self, ctx: hmParser.ExprStmtContext):
+        [expr] = list(ctx.getChildren())
+        return self.visit(expr)
+    
+    def visitDefinicioStmt(self, ctx: hmParser.DefinicioStmtContext):
+        [definicio] = list(ctx.getChildren())
+        return self.visit(definicio)
+    
+    def visitDefinicio(self, ctx: hmParser.DefinicioStmtContext):
+        [expr, _, _, tipus] = list(ctx.getChildren())
+        self.symbolsTable[str(expr.getText())] = str(tipus.getText())
+        print(self.symbolsTable)
+        return None
     
     def visitParentesis(self, ctx: hmParser.ParentesisContext):
         [_, expr, _] = list(ctx.getChildren())
@@ -50,6 +68,7 @@ class TreeVisitor(hmVisitor):
 
     def visitOperadorInfix(self, ctx: hmParser.OperadorInfixContext):
         return Node('(+)', [])
+    
 
 def generarArbre(root):
     graph = Graph()
@@ -70,8 +89,14 @@ def generarArbre(root):
 
     return graph
 
+@st.cache_resource
+def initialize_tree_visitor():
+    return TreeVisitor()
 
 if __name__ == "__main__":
+    visitor = initialize_tree_visitor()
+
+
     input = st.text_input(label='Expressió:')
     button_stream = st.button(label='fer')
 
@@ -81,13 +106,13 @@ if __name__ == "__main__":
         token_stream = CommonTokenStream(lexer)
         parser = hmParser(token_stream)
         tree = parser.root()
+        
         if parser.getNumberOfSyntaxErrors() == 0:
-            visitor = TreeVisitor()
             arbreSematic = visitor.visit(tree)
-            arbreDOT = generarArbre(arbreSematic)
 
-            # Render the graph using graphviz_chart
-            st.graphviz_chart(arbreDOT)
+            if arbreSematic != None:
+                arbreDOT = generarArbre(arbreSematic)
+                st.graphviz_chart(arbreDOT)
 
         else:
             st.write(str(parser.getNumberOfSyntaxErrors()) +  'errors de sintaxi.')
