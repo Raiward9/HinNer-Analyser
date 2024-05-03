@@ -11,10 +11,8 @@ class Node:
 
 class TreeVisitor(hmVisitor):
     def visitRoot(self, ctx:hmParser.RootContext):
-        [expr1] = list(ctx.getChildren())
-        arbre1 = self.visit(expr1)
-        print(arbre1)
-        return Node('',[arbre1])
+        [expr1, _] = list(ctx.getChildren())
+        return self.visit(expr1)
     
     def visitParentesis(self, ctx: hmParser.ParentesisContext):
         [expr] = list(ctx.getChildren())
@@ -41,7 +39,7 @@ class TreeVisitor(hmVisitor):
         return Node(identificador, [])
     
     def visitFuncioAnonima(self, ctx: hmParser.FuncioAnonimaContext):
-        [slash, ident, arrow, expr] = list(ctx.getChildren())
+        [_, ident, _, expr] = list(ctx.getChildren())
         arbreIdent = Node(str(ident), [])
         arbreExpr = self.visit(expr)
         return Node('λ', [arbreIdent, arbreExpr]) 
