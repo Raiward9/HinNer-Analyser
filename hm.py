@@ -27,8 +27,13 @@ class TreeVisitor(hmVisitor):
         print("Crida innit")
 
     def visitRoot(self, ctx:hmParser.RootContext):
-        [expr1, _] = list(ctx.getChildren())
-        return self.visit(expr1)
+        exprs = list(ctx.getChildren())
+        res = []
+        for expr in exprs:
+            resExpr = self.visit(expr)
+            if resExpr != None:
+                res.append(self.visit(expr))
+        return res
     
     def visitExprStmt(self, ctx: hmParser.ExprStmtContext):
         [expr] = list(ctx.getChildren())
@@ -41,7 +46,6 @@ class TreeVisitor(hmVisitor):
     def visitDefinicio(self, ctx: hmParser.DefinicioStmtContext):
         [expr, _, _, tipus] = list(ctx.getChildren())
         arbreTipus = self.visit(tipus)
-        print(arbreTipus)
         self.taulaSimbols[str(expr.getText())] = arbreTipus
         return None
     
@@ -164,7 +168,7 @@ if __name__ == "__main__":
 
     visitor = TreeVisitor(taulaSimbols)
     
-    input = st.text_input(label='Expressió:')
+    input = st.text_area(label='Expressió:')
     button_stream = st.button(label='fer')
 
     if button_stream:
@@ -175,16 +179,16 @@ if __name__ == "__main__":
         tree = parser.root()
         
         if parser.getNumberOfSyntaxErrors() == 0:
-            arbreSematic = visitor.visit(tree)
+            arbresSemantic = visitor.visit(tree)
+            for arbreSemantic in arbresSemantic:
+                if arbresSemantic != None:
+                   arbreDOT = generarArbre(arbreSemantic)
+                   st.graphviz_chart(arbreDOT)
             
             taulaSimbols = visitor.taulaSimbols
             st.session_state["taulaSimbols"] = dumps(taulaSimbols)
             table.dataframe(createDataTable(taulaSimbols), use_container_width=True)
-
-            if arbreSematic != None:
-                arbreDOT = generarArbre(arbreSematic)
-                st.graphviz_chart(arbreDOT)
-
+                
         else:
             st.write(str(parser.getNumberOfSyntaxErrors()) +  'errors de sintaxi.')
 

@@ -1,6 +1,6 @@
 // Gramàtica per expressions senzilles
 grammar hm;
-root : statement EOF 
+root : (statement)* 
      ;
 
 statement : expr                        # exprStmt
