@@ -7,6 +7,14 @@ from antlr4 import *
 from hmLexer import hmLexer
 from hmParser import hmParser   
 from hmVisitor import hmVisitor
+from pickle import dumps, loads
+import pandas as pd
+
+# utilitzar st.session_state
+# per poder guardar, caldra serialitzar els valors
+# usar llibreria pickle de python
+# aquesta llibreria te dumps -> guardar, loads -> recuperar
+# abans de que s'acabi el codi, fer un dumps, i abans de fer el parser, fer un loads
 
 @dataclass
 class Node:
@@ -14,8 +22,8 @@ class Node:
     children: list
 
 class TreeVisitor(hmVisitor):
-    def __init__(self):
-        self.symbolsTable = {}
+    def __init__(self, taulaSimbols):
+        self.taulaSimbols = taulaSimbols
         print("Crida innit")
 
     def visitRoot(self, ctx:hmParser.RootContext):
@@ -32,10 +40,27 @@ class TreeVisitor(hmVisitor):
     
     def visitDefinicio(self, ctx: hmParser.DefinicioStmtContext):
         [expr, _, _, tipus] = list(ctx.getChildren())
-        self.symbolsTable[str(expr.getText())] = str(tipus.getText())
-        print(self.symbolsTable)
+        arbreTipus = self.visit(tipus)
+        print(arbreTipus)
+        self.taulaSimbols[str(expr.getText())] = arbreTipus
         return None
     
+    def visitTipusSimple(self, ctx: hmParser.TipusSimpleContext):
+        [tipus] = list(ctx.getChildren())
+        tipus = str(ctx.getText())
+        return Node(tipus, [])
+    
+    def visitTipusAssociatiu(self, ctx: hmParser.TipusAssociatiuContext):
+        [tipus1, arrow, tipus2] = list(ctx.getChildren())
+        arbreTipus1 = self.visit(tipus1)
+        arbreTipus2 = self.visit(tipus2)
+        return Node('->', [arbreTipus1, arbreTipus2])
+    
+    def visitTipusParentesis(self, ctx: hmParser.TipusParentesisContext):
+        [lpar, tipus, rpar] = list(ctx.getChildren())
+        arbreTipus = self.visit(tipus)
+        return Node('()', [arbreTipus])
+
     def visitParentesis(self, ctx: hmParser.ParentesisContext):
         [_, expr, _] = list(ctx.getChildren())
         return self.visit(expr)
@@ -89,14 +114,56 @@ def generarArbre(root):
 
     return graph
 
-@st.cache_resource
-def initialize_tree_visitor():
-    return TreeVisitor()
+def passarArbreDeTipusAString(root):
+    res = passarArbreDeTipusAStringRec(root)
+    if len(res) > 1:
+        return "(" + res + ")"
+    else:
+        return res
+
+def passarArbreDeTipusAStringRec(root):
+    match root:
+        case Node('->', [child1, child2]):
+            textChild1 = passarArbreDeTipusAStringRec(child1)
+            textChild2 = passarArbreDeTipusAStringRec(child2)
+            if len(textChild2) > 1:
+                res = textChild1 + " -> " + "(" + textChild2 + ")"
+            else:
+                res =  textChild1 + " -> " + textChild2
+            return res
+        
+        case Node('()', [child1]):
+            textChild1 = passarArbreDeTipusAStringRec(child1)
+            res = "(" + textChild1 + ")"
+            return res
+        
+        case Node(x, []):
+            return x
+        
+def createDataTable(taulaSimbols):
+    columns = ["Tipus"]
+    indexes = []
+    data = []
+    for key, arbreTipus in taulaSimbols.items():
+        tipus = passarArbreDeTipusAString(arbreTipus)
+        indexes.append(key)
+        data.append(tipus)
+
+    return pd.DataFrame(data=data, index=indexes, columns=columns)
+
 
 if __name__ == "__main__":
-    visitor = initialize_tree_visitor()
 
+    taulaSimbols = {}
+    if 'taulaSimbols' in st.session_state:
+        taulaSimbols = st.session_state["taulaSimbols"]
+        taulaSimbols = loads(taulaSimbols)
 
+    dataTable = createDataTable(taulaSimbols)
+    table = st.table(dataTable)
+
+    visitor = TreeVisitor(taulaSimbols)
+    
     input = st.text_input(label='Expressió:')
     button_stream = st.button(label='fer')
 
@@ -109,6 +176,10 @@ if __name__ == "__main__":
         
         if parser.getNumberOfSyntaxErrors() == 0:
             arbreSematic = visitor.visit(tree)
+            
+            taulaSimbols = visitor.taulaSimbols
+            st.session_state["taulaSimbols"] = dumps(taulaSimbols)
+            table.dataframe(createDataTable(taulaSimbols), use_container_width=True)
 
             if arbreSematic != None:
                 arbreDOT = generarArbre(arbreSematic)
