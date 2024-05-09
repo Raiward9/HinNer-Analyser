@@ -96,14 +96,18 @@ class TreeVisitor(hmVisitor):
         if numero in self.taulaSimbols:
             return Node(numero, [], self.taulaSimbols[numero])
         else:
-            return Node(numero, [], Node(self.getSimbolLliure(), [], Buit))
+            tipus = self.getSimbolLliure()
+            self.taulaSimbols[numero] = tipus
+            return Node(numero, [], Node(tipus, [], Buit))
     
     def visitIdent(self, ctx: hmParser.IdentContext):
         identificador = str(ctx.getText())
         if identificador in self.taulaSimbols:
             return Node(identificador, [], self.taulaSimbols[identificador])
         else:
-            return Node(identificador, [], Node(self.getSimbolLliure(), [], Buit))
+            tipus = self.getSimbolLliure()
+            self.taulaSimbols[identificador] = tipus
+            return Node(identificador, [], Node(tipus, [], Buit))
     
     def visitFuncioAnonima(self, ctx: hmParser.FuncioAnonimaContext):
         [_, ident, _, expr] = list(ctx.getChildren())
@@ -116,7 +120,9 @@ class TreeVisitor(hmVisitor):
         if operador in self.taulaSimbols:
             return Node(operador, [], self.taulaSimbols[operador])
         else:
-            return Node(operador, [], Node(self.getSimbolLliure(), [], Buit))
+            tipus = self.getSimbolLliure()
+            self.taulaSimbols[operador] = tipus
+            return Node(operador, [], Node(tipus, [], Buit))
     
 
 def generarArbre(root):
