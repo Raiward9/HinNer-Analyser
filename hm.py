@@ -54,7 +54,7 @@ class TreeVisitor(hmVisitor):
         for expr in exprs:
             resExpr = self.visit(expr)
             if resExpr != None:
-                res.append(self.visit(expr))
+                res.append(resExpr)
         return res
     
     def visitExprStmt(self, ctx: hmParser.ExprStmtContext):
@@ -96,8 +96,12 @@ class TreeVisitor(hmVisitor):
     def visitAplicacioExpr(self, ctx: hmParser.AplicacioExprContext):
         [expr1, expr2] = list(ctx.getChildren())
         simbol = self.getSimbolLliure()
+
         arbreExpr1 = self.visit(expr1)
         arbreExpr2 = self.visit(expr2)
+
+        print("Aplicacio visitada: ", simbol)
+
         return Node('@', [arbreExpr1, arbreExpr2], Node(simbol, [], Buit))
 
     def visitAbstraccioExpr(self, ctx: hmParser.AbstraccioExprContext):
@@ -115,9 +119,9 @@ class TreeVisitor(hmVisitor):
     def visitFuncioAnonima(self, ctx: hmParser.FuncioAnonimaContext):
         [_, ident, _, expr] = list(ctx.getChildren())
 
-        simbolActual = self.simbolLliure
         simbol = self.getSimbolLliure()
-
+        simbolActual = self.simbolLliure
+        
         self.taulaSimbols.append({})
         
         simbolIdent = self.getSimbolLliure()
