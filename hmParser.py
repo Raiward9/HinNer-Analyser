@@ -10,28 +10,28 @@ else:
 
 def serializedATN():
     return [
-        4,1,9,70,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,1,0,5,0,
-        14,8,0,10,0,12,0,17,9,0,1,1,1,1,3,1,21,8,1,1,2,1,2,1,2,1,2,1,2,1,
-        3,1,3,1,3,1,3,1,3,1,3,3,3,34,8,3,1,3,1,3,1,3,5,3,39,8,3,10,3,12,
-        3,42,9,3,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,3,4,52,8,4,1,4,1,4,5,4,
-        56,8,4,10,4,12,4,59,9,4,1,5,1,5,1,5,1,5,1,5,1,5,1,5,3,5,68,8,5,1,
-        5,0,2,6,8,6,0,2,4,6,8,10,0,0,72,0,15,1,0,0,0,2,20,1,0,0,0,4,22,1,
-        0,0,0,6,33,1,0,0,0,8,51,1,0,0,0,10,67,1,0,0,0,12,14,3,2,1,0,13,12,
-        1,0,0,0,14,17,1,0,0,0,15,13,1,0,0,0,15,16,1,0,0,0,16,1,1,0,0,0,17,
-        15,1,0,0,0,18,21,3,8,4,0,19,21,3,4,2,0,20,18,1,0,0,0,20,19,1,0,0,
-        0,21,3,1,0,0,0,22,23,3,8,4,0,23,24,5,3,0,0,24,25,5,3,0,0,25,26,3,
-        6,3,0,26,5,1,0,0,0,27,28,6,3,-1,0,28,34,5,8,0,0,29,30,5,5,0,0,30,
-        31,3,6,3,0,31,32,5,6,0,0,32,34,1,0,0,0,33,27,1,0,0,0,33,29,1,0,0,
-        0,34,40,1,0,0,0,35,36,10,2,0,0,36,37,5,1,0,0,37,39,3,6,3,2,38,35,
-        1,0,0,0,39,42,1,0,0,0,40,38,1,0,0,0,40,41,1,0,0,0,41,7,1,0,0,0,42,
-        40,1,0,0,0,43,44,6,4,-1,0,44,45,5,5,0,0,45,46,3,8,4,0,46,47,5,6,
-        0,0,47,52,1,0,0,0,48,52,3,10,5,0,49,52,5,7,0,0,50,52,5,8,0,0,51,
-        43,1,0,0,0,51,48,1,0,0,0,51,49,1,0,0,0,51,50,1,0,0,0,52,57,1,0,0,
-        0,53,54,10,4,0,0,54,56,3,8,4,5,55,53,1,0,0,0,56,59,1,0,0,0,57,55,
-        1,0,0,0,57,58,1,0,0,0,58,9,1,0,0,0,59,57,1,0,0,0,60,61,5,2,0,0,61,
-        62,5,8,0,0,62,63,5,1,0,0,63,68,3,8,4,0,64,65,5,5,0,0,65,66,5,4,0,
-        0,66,68,5,6,0,0,67,60,1,0,0,0,67,64,1,0,0,0,68,11,1,0,0,0,7,15,20,
-        33,40,51,57,67
+        4,1,9,72,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,1,0,5,0,
+        14,8,0,10,0,12,0,17,9,0,1,0,1,0,1,1,1,1,3,1,23,8,1,1,2,1,2,1,2,1,
+        2,1,2,1,3,1,3,1,3,1,3,1,3,1,3,3,3,36,8,3,1,3,1,3,1,3,5,3,41,8,3,
+        10,3,12,3,44,9,3,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,3,4,54,8,4,1,4,
+        1,4,5,4,58,8,4,10,4,12,4,61,9,4,1,5,1,5,1,5,1,5,1,5,1,5,1,5,3,5,
+        70,8,5,1,5,0,2,6,8,6,0,2,4,6,8,10,0,0,74,0,15,1,0,0,0,2,22,1,0,0,
+        0,4,24,1,0,0,0,6,35,1,0,0,0,8,53,1,0,0,0,10,69,1,0,0,0,12,14,3,2,
+        1,0,13,12,1,0,0,0,14,17,1,0,0,0,15,13,1,0,0,0,15,16,1,0,0,0,16,18,
+        1,0,0,0,17,15,1,0,0,0,18,19,5,0,0,1,19,1,1,0,0,0,20,23,3,8,4,0,21,
+        23,3,4,2,0,22,20,1,0,0,0,22,21,1,0,0,0,23,3,1,0,0,0,24,25,3,8,4,
+        0,25,26,5,3,0,0,26,27,5,3,0,0,27,28,3,6,3,0,28,5,1,0,0,0,29,30,6,
+        3,-1,0,30,36,5,8,0,0,31,32,5,5,0,0,32,33,3,6,3,0,33,34,5,6,0,0,34,
+        36,1,0,0,0,35,29,1,0,0,0,35,31,1,0,0,0,36,42,1,0,0,0,37,38,10,2,
+        0,0,38,39,5,1,0,0,39,41,3,6,3,2,40,37,1,0,0,0,41,44,1,0,0,0,42,40,
+        1,0,0,0,42,43,1,0,0,0,43,7,1,0,0,0,44,42,1,0,0,0,45,46,6,4,-1,0,
+        46,47,5,5,0,0,47,48,3,8,4,0,48,49,5,6,0,0,49,54,1,0,0,0,50,54,3,
+        10,5,0,51,54,5,7,0,0,52,54,5,8,0,0,53,45,1,0,0,0,53,50,1,0,0,0,53,
+        51,1,0,0,0,53,52,1,0,0,0,54,59,1,0,0,0,55,56,10,4,0,0,56,58,3,8,
+        4,5,57,55,1,0,0,0,58,61,1,0,0,0,59,57,1,0,0,0,59,60,1,0,0,0,60,9,
+        1,0,0,0,61,59,1,0,0,0,62,63,5,2,0,0,63,64,5,8,0,0,64,65,5,1,0,0,
+        65,70,3,8,4,0,66,67,5,5,0,0,67,68,5,4,0,0,68,70,5,6,0,0,69,62,1,
+        0,0,0,69,66,1,0,0,0,70,11,1,0,0,0,7,15,22,35,42,53,59,69
     ]
 
 class hmParser ( Parser ):
@@ -85,6 +85,9 @@ class hmParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
+        def EOF(self):
+            return self.getToken(hmParser.EOF, 0)
+
         def statement(self, i:int=None):
             if i is None:
                 return self.getTypedRuleContexts(hmParser.StatementContext)
@@ -121,6 +124,8 @@ class hmParser ( Parser ):
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
+            self.state = 18
+            self.match(hmParser.EOF)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -187,20 +192,20 @@ class hmParser ( Parser ):
         localctx = hmParser.StatementContext(self, self._ctx, self.state)
         self.enterRule(localctx, 2, self.RULE_statement)
         try:
-            self.state = 20
+            self.state = 22
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,1,self._ctx)
             if la_ == 1:
                 localctx = hmParser.ExprStmtContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 18
+                self.state = 20
                 self.expr(0)
                 pass
 
             elif la_ == 2:
                 localctx = hmParser.DefinicioStmtContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 19
+                self.state = 21
                 self.definicio()
                 pass
 
@@ -253,13 +258,13 @@ class hmParser ( Parser ):
         self.enterRule(localctx, 4, self.RULE_definicio)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 22
-            self.expr(0)
-            self.state = 23
-            self.match(hmParser.DOSPUNTS)
             self.state = 24
-            self.match(hmParser.DOSPUNTS)
+            self.expr(0)
             self.state = 25
+            self.match(hmParser.DOSPUNTS)
+            self.state = 26
+            self.match(hmParser.DOSPUNTS)
+            self.state = 27
             self.tipus(0)
         except RecognitionException as re:
             localctx.exception = re
@@ -355,7 +360,7 @@ class hmParser ( Parser ):
         self.enterRecursionRule(localctx, 6, self.RULE_tipus, _p)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 33
+            self.state = 35
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [8]:
@@ -363,25 +368,25 @@ class hmParser ( Parser ):
                 self._ctx = localctx
                 _prevctx = localctx
 
-                self.state = 28
+                self.state = 30
                 self.match(hmParser.IDENT)
                 pass
             elif token in [5]:
                 localctx = hmParser.TipusParentesisContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 29
-                self.match(hmParser.LPAR)
-                self.state = 30
-                self.tipus(0)
                 self.state = 31
+                self.match(hmParser.LPAR)
+                self.state = 32
+                self.tipus(0)
+                self.state = 33
                 self.match(hmParser.RPAR)
                 pass
             else:
                 raise NoViableAltException(self)
 
             self._ctx.stop = self._input.LT(-1)
-            self.state = 40
+            self.state = 42
             self._errHandler.sync(self)
             _alt = self._interp.adaptivePredict(self._input,3,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
@@ -391,15 +396,15 @@ class hmParser ( Parser ):
                     _prevctx = localctx
                     localctx = hmParser.TipusAssociatiuContext(self, hmParser.TipusContext(self, _parentctx, _parentState))
                     self.pushNewRecursionContext(localctx, _startState, self.RULE_tipus)
-                    self.state = 35
+                    self.state = 37
                     if not self.precpred(self._ctx, 2):
                         from antlr4.error.Errors import FailedPredicateException
                         raise FailedPredicateException(self, "self.precpred(self._ctx, 2)")
-                    self.state = 36
+                    self.state = 38
                     self.match(hmParser.ARROW)
-                    self.state = 37
+                    self.state = 39
                     self.tipus(2) 
-                self.state = 42
+                self.state = 44
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,3,self._ctx)
 
@@ -528,7 +533,7 @@ class hmParser ( Parser ):
         self.enterRecursionRule(localctx, 8, self.RULE_expr, _p)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 51
+            self.state = 53
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,4,self._ctx)
             if la_ == 1:
@@ -536,11 +541,11 @@ class hmParser ( Parser ):
                 self._ctx = localctx
                 _prevctx = localctx
 
-                self.state = 44
-                self.match(hmParser.LPAR)
-                self.state = 45
-                self.expr(0)
                 self.state = 46
+                self.match(hmParser.LPAR)
+                self.state = 47
+                self.expr(0)
+                self.state = 48
                 self.match(hmParser.RPAR)
                 pass
 
@@ -548,7 +553,7 @@ class hmParser ( Parser ):
                 localctx = hmParser.AbstraccioExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 48
+                self.state = 50
                 self.abstraccio()
                 pass
 
@@ -556,7 +561,7 @@ class hmParser ( Parser ):
                 localctx = hmParser.NumeroContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 49
+                self.state = 51
                 self.match(hmParser.NUM)
                 pass
 
@@ -564,13 +569,13 @@ class hmParser ( Parser ):
                 localctx = hmParser.IdentContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
-                self.state = 50
+                self.state = 52
                 self.match(hmParser.IDENT)
                 pass
 
 
             self._ctx.stop = self._input.LT(-1)
-            self.state = 57
+            self.state = 59
             self._errHandler.sync(self)
             _alt = self._interp.adaptivePredict(self._input,5,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
@@ -580,13 +585,13 @@ class hmParser ( Parser ):
                     _prevctx = localctx
                     localctx = hmParser.AplicacioExprContext(self, hmParser.ExprContext(self, _parentctx, _parentState))
                     self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
-                    self.state = 53
+                    self.state = 55
                     if not self.precpred(self._ctx, 4):
                         from antlr4.error.Errors import FailedPredicateException
                         raise FailedPredicateException(self, "self.precpred(self._ctx, 4)")
-                    self.state = 54
+                    self.state = 56
                     self.expr(5) 
-                self.state = 59
+                self.state = 61
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,5,self._ctx)
 
@@ -665,29 +670,29 @@ class hmParser ( Parser ):
         localctx = hmParser.AbstraccioContext(self, self._ctx, self.state)
         self.enterRule(localctx, 10, self.RULE_abstraccio)
         try:
-            self.state = 67
+            self.state = 69
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [2]:
                 localctx = hmParser.FuncioAnonimaContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 60
-                self.match(hmParser.SLASH)
-                self.state = 61
-                self.match(hmParser.IDENT)
                 self.state = 62
-                self.match(hmParser.ARROW)
+                self.match(hmParser.SLASH)
                 self.state = 63
+                self.match(hmParser.IDENT)
+                self.state = 64
+                self.match(hmParser.ARROW)
+                self.state = 65
                 self.expr(0)
                 pass
             elif token in [5]:
                 localctx = hmParser.OperadorInfixContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 64
-                self.match(hmParser.LPAR)
-                self.state = 65
-                self.match(hmParser.SUMA)
                 self.state = 66
+                self.match(hmParser.LPAR)
+                self.state = 67
+                self.match(hmParser.SUMA)
+                self.state = 68
                 self.match(hmParser.RPAR)
                 pass
             else:

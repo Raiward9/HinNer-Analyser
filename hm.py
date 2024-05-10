@@ -9,6 +9,7 @@ from hmParser import hmParser
 from hmVisitor import hmVisitor
 from pickle import dumps, loads
 import pandas as pd
+import copy
 
 # utilitzar st.session_state
 # per poder guardar, caldra serialitzar els valors
@@ -29,14 +30,23 @@ Arbre = Node | Buit
 
 class TreeVisitor(hmVisitor):
     def __init__(self, taulaSimbols):
-        self.taulaSimbols = taulaSimbols
+        self.taulaSimbols = [copy.deepcopy(taulaSimbols)]
+        self.taulaSimbolsDefinicions = taulaSimbols
         self.simbolLliure = 'a'
-
 
     def getSimbolLliure(self):
         lletraActual = self.simbolLliure
         self.simbolLliure = chr(ord(self.simbolLliure) + 1)
         return lletraActual
+    
+    def buscaTaulaSimbols(self, simbol):
+        for taulaSimbol in self.taulaSimbols:
+                if simbol in taulaSimbol:
+                    return Node(simbol, [], taulaSimbol[simbol])
+        
+        tipus = self.getSimbolLliure()
+        self.taulaSimbols[0][simbol] = tipus
+        return Node(simbol, [], Node(tipus, [], Buit)) 
 
     def visitRoot(self, ctx:hmParser.RootContext):
         exprs = list(ctx.getChildren())
@@ -58,7 +68,9 @@ class TreeVisitor(hmVisitor):
     def visitDefinicio(self, ctx: hmParser.DefinicioStmtContext):
         [expr, _, _, tipus] = list(ctx.getChildren())
         arbreTipus = self.visit(tipus)
-        self.taulaSimbols[str(expr.getText())] = arbreTipus
+        nomExpr = str(expr.getText())
+        self.taulaSimbols[-1][nomExpr] = arbreTipus
+        self.taulaSimbolsDefinicions[nomExpr] = arbreTipus
         return None
     
     def visitTipusSimple(self, ctx: hmParser.TipusSimpleContext):
@@ -83,9 +95,10 @@ class TreeVisitor(hmVisitor):
     
     def visitAplicacioExpr(self, ctx: hmParser.AplicacioExprContext):
         [expr1, expr2] = list(ctx.getChildren())
+        simbol = self.getSimbolLliure()
         arbreExpr1 = self.visit(expr1)
         arbreExpr2 = self.visit(expr2)
-        return Node('@', [arbreExpr1, arbreExpr2], Node(self.getSimbolLliure(), [], Buit))
+        return Node('@', [arbreExpr1, arbreExpr2], Node(simbol, [], Buit))
 
     def visitAbstraccioExpr(self, ctx: hmParser.AbstraccioExprContext):
         [expr] = list(ctx.getChildren())
@@ -93,36 +106,34 @@ class TreeVisitor(hmVisitor):
     
     def visitNumero(self, ctx: hmParser.NumeroContext):
         numero = str(ctx.getText())
-        if numero in self.taulaSimbols:
-            return Node(numero, [], self.taulaSimbols[numero])
-        else:
-            tipus = self.getSimbolLliure()
-            self.taulaSimbols[numero] = tipus
-            return Node(numero, [], Node(tipus, [], Buit))
+        return self.buscaTaulaSimbols(numero)
     
     def visitIdent(self, ctx: hmParser.IdentContext):
         identificador = str(ctx.getText())
-        if identificador in self.taulaSimbols:
-            return Node(identificador, [], self.taulaSimbols[identificador])
-        else:
-            tipus = self.getSimbolLliure()
-            self.taulaSimbols[identificador] = tipus
-            return Node(identificador, [], Node(tipus, [], Buit))
+        return self.buscaTaulaSimbols(identificador)
     
     def visitFuncioAnonima(self, ctx: hmParser.FuncioAnonimaContext):
         [_, ident, _, expr] = list(ctx.getChildren())
-        arbreIdent = Node(str(ident), [], Node(self.getSimbolLliure(), [], Buit))
+
+        simbolActual = self.simbolLliure
+        simbol = self.getSimbolLliure()
+
+        self.taulaSimbols.append({})
+        
+        simbolIdent = self.getSimbolLliure()
+        self.taulaSimbols[0][str(ident)] = simbolIdent
+        arbreIdent = Node(str(ident), [], Node(simbolIdent, [], Buit))
+
         arbreExpr = self.visit(expr)
-        return Node('λ', [arbreIdent, arbreExpr], Node(self.getSimbolLliure(), [], Buit)) 
+        
+        self.taulaSimbols.pop(0)
+        self.simbolLliure = simbolActual
+            
+        return Node('λ', [arbreIdent, arbreExpr], Node(simbol, [], Buit)) 
 
     def visitOperadorInfix(self, ctx: hmParser.OperadorInfixContext):
         operador = str(ctx.getText())
-        if operador in self.taulaSimbols:
-            return Node(operador, [], self.taulaSimbols[operador])
-        else:
-            tipus = self.getSimbolLliure()
-            self.taulaSimbols[operador] = tipus
-            return Node(operador, [], Node(tipus, [], Buit))
+        return self.buscaTaulaSimbols(operador)
     
 
 def generarArbre(root):
@@ -172,7 +183,7 @@ def passarArbreDeTipusAStringRec(root):
         case Node(x, [], _):
             return x
         case _:
-            return root.simbol
+            return root
         
 def createDataTable(taulaSimbols):
     columns = ["Tipus"]
@@ -214,9 +225,9 @@ if __name__ == "__main__":
                 arbreDOT = generarArbre(arbreSemantic)
                 st.graphviz_chart(arbreDOT)
             
-            taulaSimbols = visitor.taulaSimbols
-            st.session_state["taulaSimbols"] = dumps(taulaSimbols)
-            table.dataframe(createDataTable(taulaSimbols), use_container_width=True)
+            taulaSimbolsDefinicions = visitor.taulaSimbolsDefinicions
+            st.session_state["taulaSimbols"] = dumps(taulaSimbolsDefinicions)
+            table.dataframe(createDataTable(taulaSimbolsDefinicions), use_container_width=True)
                 
         else:
             st.write(str(parser.getNumberOfSyntaxErrors()) +  'errors de sintaxi.')
