@@ -100,8 +100,6 @@ class TreeVisitor(hmVisitor):
         arbreExpr1 = self.visit(expr1)
         arbreExpr2 = self.visit(expr2)
 
-        print("Aplicacio visitada: ", simbol)
-
         return Node('@', [arbreExpr1, arbreExpr2], Node(simbol, [], Buit))
 
     def visitAbstraccioExpr(self, ctx: hmParser.AbstraccioExprContext):
@@ -121,7 +119,7 @@ class TreeVisitor(hmVisitor):
 
         simbol = self.getSimbolLliure()
         simbolActual = self.simbolLliure
-        
+
         self.taulaSimbols.append({})
         
         simbolIdent = self.getSimbolLliure()
