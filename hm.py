@@ -45,7 +45,7 @@ class TreeVisitor(hmVisitor):
                     return Node(simbol, [], taulaSimbol[simbol])
         
         tipus = self.getSimbolLliure()
-        self.taulaSimbols[0][simbol] = tipus
+        self.taulaSimbols[0][simbol] = Node(tipus, [], Buit)
         return Node(simbol, [], Node(tipus, [], Buit)) 
 
     def visitRoot(self, ctx:hmParser.RootContext):
@@ -184,36 +184,72 @@ def passarArbreDeTipusAStringRec(root):
             return x
         case _:
             return root
-    
 
-def obteTipusAplicacio(child1, child2):
+# retorna el subarbre despres de fer matching, llenca excepcio si no son coherents els dos fills
+# Pre: size(child1) >= size(child2)     
+def matchArbre(arbre1, arbre2):
+    if arbre2.children == [] and arbre1.children != []:
+        raise TypeError("")
+    
+    if arbre2.children != [] and arbre1.children == []:
+        raise TypeError("")
+    
+    if arbre1.simbol != arbre2.simbol:
+            raise TypeError("")
+    
+    if arbre2.children != []:
+        childEsq1, childDret1 = arbre1.children 
+        childEsq2, childDret2 = arbre2.children
+        matchArbre(childEsq1, childEsq2)
+        matchArbre(childDret1, childDret2)
+        
+
+def obteTipusAplicacio(child1, child2, pare, taulaSimbolsInferida):
     tipusChild1 = child1.tipus
     tipusChild2 = child2.tipus 
+    tipusPare = pare.tipus
+
+    if child1.simbol in taulaSimbolsInferida:
+        child1.tipus = taulaSimbolsInferida[child1.simbol]
+    
+    if child2.simbol in taulaSimbolsInferida:
+        child2.tipus = taulaSimbolsInferida[child2.simbol]
 
     children2 = tipusChild2.children
-    if children2 == []:
-        # TODO: if tipushChild1.children[0].simbol != children2.simbol => throw Exception
-        print("Children2: ", tipusChild2)
-        print("Children1: ", tipusChild1)
-        childEsq1, childDret1 = tipusChild1.children
+    if children2 == []: 
+        # El fill dret no te tipus => nomes es pot inferir parcialment el tipus del fill dret
+        if tipusChild1.children == [] and child1.children == []:
+            child1.tipus = Node(simbol='->', children=[tipusChild2, tipusPare], tipus=Buit)
+            taulaSimbolsInferida[child1.simbol] = child1.tipus
+            return tipusPare
+        elif tipusChild1.children != []:
+            # El tipus del fill esquerre no te tot majuscules (es un tipus temporal)
+            childEsq1, childDret1 = tipusChild1.children
+            print("Tipus esq: ", childEsq1)
+            print("Tipus dret: ", childDret1)
 
-        # el tipus trobat no es una majuscula (tots els temporals son minuscules)
-        if not tipusChild2.simbol.isupper():  
-            # debug prints
-            previousType = child2.tipus 
+            if not tipusChild2.simbol.isupper(): 
+                taulaSimbolsInferida[tipusChild2.simbol] = childEsq1
+                child2.tipus = childEsq1
+                return childDret1
             
-            taulaSimbolsInferida[tipusChild2.simbol] = childEsq1
-            child2.tipus = childEsq1
-
-            print(f"Result : From {previousType} to {child2.tipus}")
-        return childDret1
+            elif childEsq1.simbol !=  tipusChild2.simbol:
+                tipus1 = passarArbreDeTipusAString(childEsq1)
+                tipus2 = passarArbreDeTipusAString(tipusChild2)
+                raise TypeError(f"{tipus1} vs {tipus2}")
+        
+        else:
+            raise TypeError("Wrong combination of definitions")
     else:
-        # TODO: if tipushChild1.children[0].simbol != children2.simbol => throw Exception
-        childEsq2, childDret2 = children2
-        childEsq1, childDret1 = tipusChild1
-        tipusEsq = obteTipusAplicacio(childEsq1, childEsq2)
-        tipusDret = obteTipusAplicacio(childDret1, childDret2)
-        return tipusDret
+        try:
+            matchArbre(tipusChild1.children[0], tipusChild2)
+        except TypeError:
+            tipus1 = passarArbreDeTipusAString(tipusChild1.children[0])
+            tipus2 = passarArbreDeTipusAString(tipusChild2)
+            raise TypeError(f"{tipus1} vs {tipus2}")
+            
+
+        return tipusChild1.children[1]
 
 def inferirTipusAplicacio(root, taulaSimbolsInferida):
     children = root.children
@@ -222,11 +258,17 @@ def inferirTipusAplicacio(root, taulaSimbolsInferida):
         [child1, child2] = children
         inferirTipusAplicacio(child1, taulaSimbolsInferida)
         inferirTipusAplicacio(child2, taulaSimbolsInferida)
-
-        tipus = obteTipusAplicacio(child1, child2)
         
-        taulaSimbolsInferida[tipusRoot] = tipus
-        root.tipus = tipus
+        try:
+            tipus = obteTipusAplicacio(child1, child2, root, taulaSimbolsInferida)
+            print("Tipus")
+            print(tipus)
+
+            taulaSimbolsInferida[tipusRoot] = tipus
+            root.tipus = tipus
+
+        except TypeError as error:
+            raise error
         
 def createDataTable(taulaSimbols):
     columns = ["Tipus"]
@@ -268,14 +310,18 @@ if __name__ == "__main__":
                 st.graphviz_chart(arbreDOT)
 
                 taulaSimbolsInferida = {}
-                inferirTipusAplicacio(arbreSemantic, taulaSimbolsInferida)
+                try:
+                    inferirTipusAplicacio(arbreSemantic, taulaSimbolsInferida)
+                    arbreDOT = generarArbre(arbreSemantic)
+                    st.graphviz_chart(arbreDOT)
 
-                arbreDOT = generarArbre(arbreSemantic)
-                st.graphviz_chart(arbreDOT)
+                    dataTable2 = createDataTable(taulaSimbolsInferida)
+                    st.table(dataTable2)
 
-                dataTable2 = createDataTable(taulaSimbolsInferida)
-                st.table(dataTable2)
-            
+                except TypeError as error:
+                    errorMsg = "TypeError: " + str(error)
+                    st.write(errorMsg)
+                
             taulaSimbolsDefinicions = visitor.taulaSimbolsDefinicions
             st.session_state["taulaSimbols"] = dumps(taulaSimbolsDefinicions)
             table.dataframe(createDataTable(taulaSimbolsDefinicions), use_container_width=True)
