@@ -86,8 +86,7 @@ class TreeVisitor(hmVisitor):
     
     def visitTipusParentesis(self, ctx: hmParser.TipusParentesisContext):
         [lpar, tipus, rpar] = list(ctx.getChildren())
-        arbreTipus = self.visit(tipus)
-        return Node('()', [arbreTipus], Buit)
+        return self.visit(tipus)
 
     def visitParentesis(self, ctx: hmParser.ParentesisContext):
         [_, expr, _] = list(ctx.getChildren())
@@ -169,7 +168,11 @@ def passarArbreDeTipusAString(root):
 def passarArbreDeTipusAStringRec(root):
     match root:
         case Node('->', [child1, child2], _):
-            textChild1 = passarArbreDeTipusAStringRec(child1)
+            textChild1 = ""
+            if child1.children != []:
+                textChild1 = "(" + passarArbreDeTipusAStringRec(child1) + ")"
+            else:
+                textChild1 = passarArbreDeTipusAStringRec(child1)
             textChild2 = passarArbreDeTipusAStringRec(child2)
             if len(textChild2) > 1:
                 res = textChild1 + " -> " + "(" + textChild2 + ")"
@@ -177,15 +180,53 @@ def passarArbreDeTipusAStringRec(root):
                 res =  textChild1 + " -> " + textChild2
             return res
         
-        case Node('()', [child1], _):
-            textChild1 = passarArbreDeTipusAStringRec(child1)
-            res = "(" + textChild1 + ")"
-            return res
-        
         case Node(x, [], _):
             return x
         case _:
             return root
+    
+
+def obteTipusAplicacio(child1, child2):
+    tipusChild1 = child1.tipus
+    tipusChild2 = child2.tipus 
+
+    children2 = tipusChild2.children
+    if children2 == []:
+        # TODO: if tipushChild1.children[0].simbol != children2.simbol => throw Exception
+        print("Children2: ", tipusChild2)
+        print("Children1: ", tipusChild1)
+        childEsq1, childDret1 = tipusChild1.children
+
+        # el tipus trobat no es una majuscula (tots els temporals son minuscules)
+        if not tipusChild2.simbol.isupper():  
+            # debug prints
+            previousType = child2.tipus 
+            
+            taulaSimbolsInferida[tipusChild2.simbol] = childEsq1
+            child2.tipus = childEsq1
+
+            print(f"Result : From {previousType} to {child2.tipus}")
+        return childDret1
+    else:
+        # TODO: if tipushChild1.children[0].simbol != children2.simbol => throw Exception
+        childEsq2, childDret2 = children2
+        childEsq1, childDret1 = tipusChild1
+        tipusEsq = obteTipusAplicacio(childEsq1, childEsq2)
+        tipusDret = obteTipusAplicacio(childDret1, childDret2)
+        return tipusDret
+
+def inferirTipusAplicacio(root, taulaSimbolsInferida):
+    children = root.children
+    if children != []:
+        tipusRoot = root.tipus.simbol
+        [child1, child2] = children
+        inferirTipusAplicacio(child1, taulaSimbolsInferida)
+        inferirTipusAplicacio(child2, taulaSimbolsInferida)
+
+        tipus = obteTipusAplicacio(child1, child2)
+        
+        taulaSimbolsInferida[tipusRoot] = tipus
+        root.tipus = tipus
         
 def createDataTable(taulaSimbols):
     columns = ["Tipus"]
@@ -223,9 +264,17 @@ if __name__ == "__main__":
         if parser.getNumberOfSyntaxErrors() == 0:
             arbresSemantic = visitor.visit(tree)
             for arbreSemantic in arbresSemantic:
-                
                 arbreDOT = generarArbre(arbreSemantic)
                 st.graphviz_chart(arbreDOT)
+
+                taulaSimbolsInferida = {}
+                inferirTipusAplicacio(arbreSemantic, taulaSimbolsInferida)
+
+                arbreDOT = generarArbre(arbreSemantic)
+                st.graphviz_chart(arbreDOT)
+
+                dataTable2 = createDataTable(taulaSimbolsInferida)
+                st.table(dataTable2)
             
             taulaSimbolsDefinicions = visitor.taulaSimbolsDefinicions
             st.session_state["taulaSimbols"] = dumps(taulaSimbolsDefinicions)
