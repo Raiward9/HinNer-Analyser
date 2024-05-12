@@ -216,30 +216,30 @@ def obteTipusAplicacio(child1, child2, pare, taulaSimbolsInferida):
         child2.tipus = taulaSimbolsInferida[child2.simbol]
 
     children2 = tipusChild2.children
-    if children2 == []: 
-        # El fill dret no te tipus => nomes es pot inferir parcialment el tipus del fill dret
-        if tipusChild1.children == [] and child1.children == []:
-            child1.tipus = Node(simbol='->', children=[tipusChild2, tipusPare], tipus=Buit)
-            taulaSimbolsInferida[child1.simbol] = child1.tipus
-            return tipusPare
-        elif tipusChild1.children != []:
-            # El tipus del fill esquerre no te tot majuscules (es un tipus temporal)
-            childEsq1, childDret1 = tipusChild1.children
-            print("Tipus esq: ", childEsq1)
-            print("Tipus dret: ", childDret1)
-
-            if not tipusChild2.simbol.isupper(): 
+    if children2 == []: # es un tipus "simple" (temporal o un unic simbol)
+        # tipus temporal 
+        if not tipusChild2.simbol.isupper():
+            # tipus temporal child1
+            if tipusChild1.children == [] and not tipusChild1.simbol.isupper():
+                child1.tipus = Node(simbol='->', children=[tipusChild2, tipusPare], tipus=Buit)
+                taulaSimbolsInferida[child1.simbol] = child1.tipus
+                return tipusPare
+            elif tipusChild1.children != []: # es un tipus "complex" (arbre amb fills)
+                childEsq1, childDret1 = tipusChild1.children
                 taulaSimbolsInferida[tipusChild2.simbol] = childEsq1
                 child2.tipus = childEsq1
                 return childDret1
-            
-            elif childEsq1.simbol !=  tipusChild2.simbol:
-                tipus1 = passarArbreDeTipusAString(childEsq1)
+            else: # es un tipus "simple" (unic simbol) i no es el root
+                raise TypeError("Wrong combination of definitions")
+        else: # es un tipus simple no temporal (definit o inferit)
+            try:
+                matchArbre(tipusChild1.children[0], tipusChild2)
+            except TypeError:
+                tipus1 = passarArbreDeTipusAString(tipusChild1.children[0])
                 tipus2 = passarArbreDeTipusAString(tipusChild2)
                 raise TypeError(f"{tipus1} vs {tipus2}")
-        
-        else:
-            raise TypeError("Wrong combination of definitions")
+            
+            return tipusChild1.children[1]
     else:
         try:
             matchArbre(tipusChild1.children[0], tipusChild2)
@@ -261,8 +261,7 @@ def inferirTipusAplicacio(root, taulaSimbolsInferida):
         
         try:
             tipus = obteTipusAplicacio(child1, child2, root, taulaSimbolsInferida)
-            print("Tipus")
-            print(tipus)
+            print(f"Node: {root} \nTipus: {tipus}")
 
             taulaSimbolsInferida[tipusRoot] = tipus
             root.tipus = tipus

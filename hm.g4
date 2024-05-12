@@ -10,7 +10,7 @@ statement : expr                        # exprStmt
 definicio : expr DOSPUNTS DOSPUNTS tipus
           ;
 
-tipus : IDENT                                          # tipusSimple
+tipus : TIPUS                                          # tipusSimple
       | <assoc=right> tipus ARROW tipus                # tipusAssociatiu
       | LPAR tipus RPAR                                # tipusParentesis
       ;
@@ -33,6 +33,6 @@ SUMA           : '+';
 LPAR           : '(';
 RPAR           : ')';
 NUM            : [0-9]+ ;
-// TIPUS          : ('A'..'Z')+;
-IDENT          : ('a'..'z' | 'A'..'Z') ('a'..'z' | 'A'..'Z' | '0'..'9')*;
+TIPUS          : [A-Z]+;
+IDENT          : [a-zA-Z] ([a-zA-Z] | [0-9])*;
 WS             : [ \t\n\r]+ -> skip ;
