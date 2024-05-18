@@ -39,7 +39,11 @@ class TreeVisitor(hmVisitor):
         self.simbolLliure += 1
         return lletraActual
     
-    def buscaTaulaSimbols(self, simbol):
+    def buscaTaulaSimbols(self, simbol: str) -> Node:
+        print("Simbol")
+        print(simbol)
+        print("Taula simbols")
+        print(self.taulaSimbols)
         for taulaSimbol in self.taulaSimbols:
                 if simbol in taulaSimbol:
                     return Node(simbol, [], taulaSimbol[simbol])
@@ -115,15 +119,17 @@ class TreeVisitor(hmVisitor):
     
     def visitFuncioAnonima(self, ctx: hmParser.FuncioAnonimaContext):
         [_, ident, _, expr] = list(ctx.getChildren())
+        self.taulaSimbols.insert(0, {})
 
         simbol = self.getSimbolLliure()
-
-        self.taulaSimbols.append({})
         
         simbolIdent = self.getSimbolLliure()
-        self.taulaSimbols[0][str(ident)] = simbolIdent
-        arbreIdent = Node(str(ident), [], Node(simbolIdent, [], Buit))
+        self.taulaSimbols[0][str(ident)] = Node(simbolIdent, [], Buit)
+        
+        print("Taula simbols funcio anonima")
+        print(self.taulaSimbols)
 
+        arbreIdent = Node(str(ident), [], Node(simbolIdent, [], Buit))
         arbreExpr = self.visit(expr)
 
         self.taulaSimbols.pop(0)
@@ -135,12 +141,12 @@ class TreeVisitor(hmVisitor):
         return self.buscaTaulaSimbols(operador)
     
 
-def generarArbre(root):
+def generarArbre(root: Node, taulaSimbols: dict) -> Graph:
     graph = Graph()
     nodes = [["n0",root]]
     numNode = 0
 
-    tipus = passarArbreDeTipusAString(root.tipus)
+    tipus = passarArbreDeTipusAString(root.tipus, taulaSimbols)
     graph.node(f"n{numNode}", f"{root.simbol}\n{tipus}")
     numNode += 1
     
@@ -148,7 +154,7 @@ def generarArbre(root):
         numNodeParent, node = nodes.pop(0)
         for child in node.children:
             numNodeChild = f"n{numNode}"
-            tipus = passarArbreDeTipusAString(child.tipus)
+            tipus = passarArbreDeTipusAString(child.tipus, taulaSimbols)
             graph.node(numNodeChild, f"{child.simbol}\n{tipus}")
             nodes.append([numNodeChild, child])
             numNode += 1
@@ -156,107 +162,107 @@ def generarArbre(root):
 
     return graph
 
-def passarArbreDeTipusAString(root):
+def passarArbreDeTipusAString(root: Node, taulaSimbols: dict) -> str:
     match root:
         case Node('->', [child1, child2], _):
-            return f"({passarArbreDeTipusAString(child1)} -> {passarArbreDeTipusAString(child2)})"
+            return f"({passarArbreDeTipusAString(child1, taulaSimbols)} -> {passarArbreDeTipusAString(child2, taulaSimbols)})"
         case Node(x, [], _):
+            if x in taulaSimbols:
+                return passarArbreDeTipusAString(taulaSimbols[x], taulaSimbols)
+            
             return x
-        case _:
-            return root
+   
 
-# retorna el subarbre despres de fer matching, llenca excepcio si no son coherents els dos fills
-# Pre: size(child1) >= size(child2)     
-def matchArbre(arbre1, arbre2):
-    if arbre2.children == [] and arbre1.children != []:
-        raise TypeError("")
-    
-    if arbre2.children != [] and arbre1.children == []:
-        raise TypeError("")
-    
-    if arbre1.simbol != arbre2.simbol:
-            raise TypeError("")
-    
-    if arbre2.children != []:
-        childEsq1, childDret1 = arbre1.children 
-        childEsq2, childDret2 = arbre2.children
-        matchArbre(childEsq1, childEsq2)
-        matchArbre(childDret1, childDret2)
-        
+def is_a_term(root: Node) -> bool:
+    return root.simbol.isupper()
 
-def obteTipusAplicacio(child1, child2, pare, taulaSimbolsInferida):
-    tipusChild1 = child1.tipus
-    tipusChild2 = child2.tipus 
-    tipusPare = pare.tipus
-
-    if child1.simbol in taulaSimbolsInferida:
-        child1.tipus = taulaSimbolsInferida[child1.simbol]
-    
-    if child2.simbol in taulaSimbolsInferida:
-        child2.tipus = taulaSimbolsInferida[child2.simbol]
-
-    children2 = tipusChild2.children
-    if children2 == []: # es un tipus "simple" (temporal o un unic simbol)
-        # tipus temporal 
-        if not tipusChild2.simbol.isupper():
-            # tipus temporal child1
-            if tipusChild1.children == [] and not tipusChild1.simbol.isupper():
-                child1.tipus = Node(simbol='->', children=[tipusChild2, tipusPare], tipus=Buit)
-                taulaSimbolsInferida[child1.simbol] = child1.tipus
-                return tipusPare
-            elif tipusChild1.children != []: # es un tipus "complex" (arbre amb fills)
-                childEsq1, childDret1 = tipusChild1.children
-                taulaSimbolsInferida[tipusChild2.simbol] = childEsq1
-                child2.tipus = childEsq1
-                return childDret1
-            else: # es un tipus "simple" (unic simbol) i no es el root
-                raise TypeError("Wrong combination of definitions")
-        else: # es un tipus simple no temporal (definit o inferit)
-            try:
-                matchArbre(tipusChild1.children[0], tipusChild2)
-            except TypeError:
-                tipus1 = passarArbreDeTipusAString(tipusChild1.children[0])
-                tipus2 = passarArbreDeTipusAString(tipusChild2)
-                raise TypeError(f"{tipus1} vs {tipus2}")
-            
-            return tipusChild1.children[1]
+def is_a_variable(root: Node) -> bool:
+    if len(root.simbol) >= 2:
+        return root.simbol[0] == "t" and root.simbol[1:].isnumeric()
     else:
-        try:
-            matchArbre(tipusChild1.children[0], tipusChild2)
-        except TypeError:
-            tipus1 = passarArbreDeTipusAString(tipusChild1.children[0])
-            tipus2 = passarArbreDeTipusAString(tipusChild2)
-            raise TypeError(f"{tipus1} vs {tipus2}")
-            
+        return False 
+    
+def are_equal(x: Node, y: Node) -> bool:
+    if len(x.children) != len(y.children):
+        return False
+    elif x.children == []:
+        return x.simbol == y.simbol
+    else:
+        return x.simbol == y.simbol and are_equal(x.children[0], y.children[0]) and are_equal(x.children[1], y.children[1])
+    
+def is_complex_type(root):
+    return root.simbol == "->"
 
-        return tipusChild1.children[1]
+def unify(x: Node, y: Node, subst: dict) -> dict:
+    if subst is None:
+        return None
+    elif are_equal(x,y):
+        return subst
+    elif is_a_variable(x):
+        return unify_variable(x, y, subst)
+    elif is_a_variable(y):
+        return unify_variable(y, x, subst)
+    elif is_complex_type(x) and is_complex_type(y):
+        for childInd in range(2):
+            subst = unify(x.children[childInd], y.children[childInd], subst)
+        
+        return subst
+    else:
+        return None
+    
+def unify_variable(v: Node, x: Node, subst: dict) -> dict:
+    assert(is_a_variable(v))
+    if v.simbol in subst:
+        return unify(subst[v.simbol], x, subst)
+    elif is_a_variable(x) and x.simbol in subst:
+        return unify(v, subst[x.simbol], subst)
+    elif occurs_check(v, x, subst):
+        return None
+    else:
+        return {**subst, v.simbol: x}
 
-def inferirTipusAplicacio(root, taulaSimbolsInferida):
+def occurs_check(v: Node, term: Node, subst: dict) -> bool:
+    assert(is_a_variable(v))
+    if are_equal(v, term):
+        return True
+    elif is_a_variable(term) and term.simbol in subst:
+        return occurs_check(v, subst[term.simbol], subst)
+    elif is_complex_type(term):
+        return any(occurs_check(v, child, subst) for child in term.children)
+    else:
+        return False
+
+def inferirTipus(root, taulaSimbolsInferida):
     children = root.children
     if children != []:
-        tipusRoot = root.tipus.simbol
-        [child1, child2] = children
-        inferirTipusAplicacio(child1, taulaSimbolsInferida)
-        inferirTipusAplicacio(child2, taulaSimbolsInferida)
-        
-        try:
-            tipus = obteTipusAplicacio(child1, child2, root, taulaSimbolsInferida)
-            print(f"Node: {root} \nTipus: {tipus}")
+        match root:
+            case Node('@', [child1, child2], _):
+                tipusRealChild1 = child1.tipus
+                tipusInferitChild1 = Node("->", [child2.tipus, root.tipus], Buit)
 
-            taulaSimbolsInferida[tipusRoot] = tipus
-            root.tipus = tipus
+                taulaSimbolsInferida = unify(tipusRealChild1, tipusInferitChild1, taulaSimbolsInferida)
 
-        except TypeError as error:
-            raise error
-        
+                taulaSimbolsInferida = inferirTipus(child1, taulaSimbolsInferida)
+                taulaSimbolsInferida = inferirTipus(child2, taulaSimbolsInferida)
 
-        
+            case Node('λ', [child1, child2], _):
+                tipusRealRoot = root.tipus
+                tipusInferitRoot = Node("->", [child1.tipus, child2.tipus], Buit)
+
+                taulaSimbolsInferida = unify(tipusRealRoot, tipusInferitRoot, taulaSimbolsInferida)
+
+                taulaSimbolsInferida = inferirTipus(child1, taulaSimbolsInferida)
+                taulaSimbolsInferida = inferirTipus(child2, taulaSimbolsInferida)
+
+    return taulaSimbolsInferida
+
+
 def createDataTable(taulaSimbols):
     columns = ["Tipus"]
     indexes = []
     data = []
     for key, arbreTipus in taulaSimbols.items():
-        tipus = passarArbreDeTipusAString(arbreTipus)
+        tipus = passarArbreDeTipusAString(arbreTipus, taulaSimbols)
         indexes.append(key)
         data.append(tipus)
 
@@ -287,13 +293,14 @@ if __name__ == "__main__":
         if parser.getNumberOfSyntaxErrors() == 0:
             arbresSemantic = visitor.visit(tree)
             for arbreSemantic in arbresSemantic:
-                arbreDOT = generarArbre(arbreSemantic)
+                arbreDOT = generarArbre(arbreSemantic, {})
                 st.graphviz_chart(arbreDOT)
 
                 taulaSimbolsInferida = {}
                 try:
-                    #inferirTipusAplicacio(arbreSemantic, taulaSimbolsInferida)
-                    arbreDOT = generarArbre(arbreSemantic)
+                    taulaSimbolsInferida = inferirTipus(arbreSemantic, taulaSimbolsInferida)
+
+                    arbreDOT = generarArbre(arbreSemantic, taulaSimbolsInferida)
                     st.graphviz_chart(arbreDOT)
 
                     dataTable2 = createDataTable(taulaSimbolsInferida)
