@@ -12,7 +12,7 @@
 <h2>Coses a evitar i tenir en compte abans d'executar el programa</h2>
 <h3>Evitar</h3>
 <ul>
-    <li>Deixar línies buides, aquestes es detectaran com a errors de sintaxis ja que l'intèrpret no trobarà el EOF de l'expressió.</li>
+    <li>Deixar línies buides (mitjançant un salt de línia), aquestes es detectaran com a errors de sintaxis ja que l'intèrpret no trobarà el EOF de l'expressió.</li>
     <li>Posar diverses expressions o definicions a la mateixa línia del textarea.</li>
 </ul>
 <h3>Tenir en compte</h3>
