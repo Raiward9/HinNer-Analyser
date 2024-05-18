@@ -11,17 +11,17 @@
 </ul>
 <h2>Coses a evitar i tenir en compte abans d'executar el programa</h2>
 <h3>Evitar</h3>
-<ol>
+<ul>
     <li>Deixar línies buides, aquestes es detectaran com a error de sintaxis ja que l'intèrpret no trobarà el EOF de l'expressió.</li>
     <li>Posar diverses expressions o definicions a la mateixa línia del textarea.</li>
-</ol>
+</ul>
 <h3>Tenir en compte</h3>
-<ol>
-    <li>Es poden colocar múltiples expressions o definicions alhora al textarea, però s'executaran de forma seqüencial</li>
+<ul>
+    <li>Es poden colocar múltiples expressions o definicions alhora al textarea, però s'executaran de forma seqüencial.</li>
     <li>En cas que surti per pantalla un TypeError amb els tipus definits, implicarà que hi ha hagut algun conflicte de tipus en la inferència. Si per altra banda es
         un error on apareixen tipus temporals, implicarà que no s'ha definit correctament l'expressió.
     </li>
-</ol>
+</ul>
 <h2>Manual</h2>
 <ol>
     <li>Afegir un statement (definició o expressió) per línia al textarea.</li>
