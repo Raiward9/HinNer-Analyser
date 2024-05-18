@@ -22,6 +22,7 @@ class Node:
 
 Arbre = Node | Buit
 
+# Visitador principal del programa 
 class TreeVisitor(hmVisitor):
     def __init__(self, taulaSimbols):
         self.taulaSimbols = [copy.deepcopy(taulaSimbols)]
@@ -123,7 +124,8 @@ class TreeVisitor(hmVisitor):
         operador = str(ctx.getText())
         return self.buscaTaulaSimbols(operador)
     
-
+# genera la instancia de Graph corresponent a l'arbre root,
+# fa us d'un diccionari amb tipus coneguts (taulaSimbols)
 def generarArbre(root: Node, taulaSimbols: dict) -> Graph:
     graph = Graph()
     nodes = [["n0",root]]
@@ -145,6 +147,8 @@ def generarArbre(root: Node, taulaSimbols: dict) -> Graph:
 
     return graph
 
+# passa un arbre de tipus a string, fa us d'un diccionari (taulaSimbols)
+# amb tipus sabuts
 def passarArbreDeTipusAString(root: Node, taulaSimbols: dict) -> str:
     match root:
         case Node('->', [child1, child2], _):
@@ -155,12 +159,15 @@ def passarArbreDeTipusAString(root: Node, taulaSimbols: dict) -> str:
             
             return x
 
+# retorna True si l'arbre es de tipus temporal (1 nivell i 
+#el seu tipus ha de ser de la forma tx, on x es un numero)
 def es_una_variable(root: Node) -> bool:
     if len(root.simbol) >= 2:
         return root.simbol[0] == "t" and root.simbol[1:].isnumeric()
     else:
         return False 
-    
+
+# retorna True si els arbres x i y son iguals, False si no    
 def son_iguals(x: Node, y: Node) -> bool:
     if len(x.children) != len(y.children):
         return False
@@ -168,10 +175,13 @@ def son_iguals(x: Node, y: Node) -> bool:
         return x.simbol == y.simbol
     else:
         return x.simbol == y.simbol and son_iguals(x.children[0], y.children[0]) and son_iguals(x.children[1], y.children[1])
-    
-def es_tipus_complex(root):
+
+# retorna True si l'arbre root es de tipus complex (té més de 1 nivell)
+# False si no
+def es_tipus_complex(root: Node) -> bool:
     return root.simbol == "->"
 
+# unifica 2 arbres de tipus, fa us d'un diccionari (subst) amb tipus sabuts
 def unificar(x: Node, y: Node, subst: dict) -> dict:
     if subst is None:
         return None
@@ -188,7 +198,9 @@ def unificar(x: Node, y: Node, subst: dict) -> dict:
         return subst
     else:
         raise TypeError(f"{passarArbreDeTipusAString(x, subst)} vs {passarArbreDeTipusAString(y, subst)}")
-    
+
+# unifica un arbre de tipus temporal amb un altre arbre, fa us d'un diccionari (subst)
+# amb tipus ja sabuts
 def unificar_variable(v: Node, x: Node, subst: dict) -> dict:
     assert(es_una_variable(v))
     if v.simbol in subst:
@@ -211,7 +223,9 @@ def esta_una_contenida_a_altre(v: Node, term: Node, subst: dict) -> bool:
     else:
         return False
 
-def inferirTipus(root, taulaSimbolsInferida):
+# infereix el tipus dels nodes d'un abre. Fa us d'un diccionari amb tipus ja 
+#inferits o sabuts i retorna un diccionari amb els tipus inferits
+def inferirTipus(root: Node, taulaSimbolsInferida: dict) -> dict:
     children = root.children
     if children != []:
         match root:
@@ -235,7 +249,8 @@ def inferirTipus(root, taulaSimbolsInferida):
 
     return taulaSimbolsInferida
 
-def createDataTable(taulaSimbols):
+# crea un dataframe a partir d'un diccionari de tipus
+def createDataTable(taulaSimbols: dict) -> pd.DataFrame:
     columns = ["Tipus"]
     indexes = []
     data = []
@@ -246,6 +261,7 @@ def createDataTable(taulaSimbols):
 
     return pd.DataFrame(data=data, index=indexes, columns=columns)
 
+# Executa tot el proces necessari per avaluar, inferir el tipus i mostrar un statement
 def executaAnalitzador(statement: str):
 
     input_stream = InputStream(statement)
