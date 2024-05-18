@@ -21,5 +21,5 @@ També cal destacar que es poden colocar multiples statements alhora al textarea
 
 <h2>Pecularitats de l'intèrpret</h2>
 <p>El mecanisme d'inferència s'ha realitzat adaptant el codi d'unificació d'equacions que podem trobar al següent blog:</p>.
-[Link text](https://eli.thegreenplace.net/2018/unification/).
+(https://eli.thegreenplace.net/2018/unification/) <br></br>
 En un començament, vaig intentar fer la inferència de tipus de la forma explicada a classe, és a dir, de forma bottom-up, no obstant, per tal de crear un intèrpret més potent, he decidit optar per aquesta opció.
