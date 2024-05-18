@@ -40,10 +40,6 @@ class TreeVisitor(hmVisitor):
         return lletraActual
     
     def buscaTaulaSimbols(self, simbol: str) -> Node:
-        print("Simbol")
-        print(simbol)
-        print("Taula simbols")
-        print(self.taulaSimbols)
         for taulaSimbol in self.taulaSimbols:
                 if simbol in taulaSimbol:
                     return Node(simbol, [], taulaSimbol[simbol])
@@ -53,13 +49,9 @@ class TreeVisitor(hmVisitor):
         return Node(simbol, [], Node(tipus, [], Buit)) 
 
     def visitRoot(self, ctx:hmParser.RootContext):
-        exprs = list(ctx.getChildren())
-        res = []
-        for expr in exprs:
-            resExpr = self.visit(expr)
-            if resExpr != None:
-                res.append(resExpr)
-        return res
+        [statement, eof] = list(ctx.getChildren())
+        resStatement = self.visit(statement)
+        return resStatement
     
     def visitExprStmt(self, ctx: hmParser.ExprStmtContext):
         [expr] = list(ctx.getChildren())
@@ -126,9 +118,6 @@ class TreeVisitor(hmVisitor):
         simbolIdent = self.getSimbolLliure()
         self.taulaSimbols[0][str(ident)] = Node(simbolIdent, [], Buit)
         
-        print("Taula simbols funcio anonima")
-        print(self.taulaSimbols)
-
         arbreIdent = Node(str(ident), [], Node(simbolIdent, [], Buit))
         arbreExpr = self.visit(expr)
 
@@ -256,7 +245,6 @@ def inferirTipus(root, taulaSimbolsInferida):
 
     return taulaSimbolsInferida
 
-
 def createDataTable(taulaSimbols):
     columns = ["Tipus"]
     indexes = []
@@ -268,6 +256,42 @@ def createDataTable(taulaSimbols):
 
     return pd.DataFrame(data=data, index=indexes, columns=columns)
 
+def executeAnalizer(statement: str):
+
+    input_stream = InputStream(statement)
+    lexer = hmLexer(input_stream)
+    token_stream = CommonTokenStream(lexer)
+    parser = hmParser(token_stream)
+    tree = parser.root()
+    
+    if parser.getNumberOfSyntaxErrors() == 0:
+        arbreSemantic = visitor.visit(tree)
+        if arbreSemantic is None:
+            return
+        
+        arbreDOT = generarArbre(arbreSemantic, {})
+        st.graphviz_chart(arbreDOT)
+
+        taulaSimbolsInferida = {}
+        try:
+            taulaSimbolsInferida = inferirTipus(arbreSemantic, taulaSimbolsInferida)
+
+            arbreDOT = generarArbre(arbreSemantic, taulaSimbolsInferida)
+            st.graphviz_chart(arbreDOT)
+
+            dataTable2 = createDataTable(taulaSimbolsInferida)
+            st.table(dataTable2)
+
+        except TypeError as error:
+            errorMsg = "TypeError: " + str(error)
+            st.write(errorMsg)
+            
+        taulaSimbolsDefinicions = visitor.taulaSimbolsDefinicions
+        st.session_state["taulaSimbols"] = dumps(taulaSimbolsDefinicions)
+        table.dataframe(createDataTable(taulaSimbolsDefinicions), use_container_width=True)
+            
+    else:
+        st.write(str(parser.getNumberOfSyntaxErrors()) +  'errors de sintaxi.')
 
 if __name__ == "__main__":
     taulaSimbols = {}
@@ -284,38 +308,9 @@ if __name__ == "__main__":
     button_stream = st.button(label='fer')
 
     if button_stream:
-        input_stream = InputStream(input)
-        lexer = hmLexer(input_stream)
-        token_stream = CommonTokenStream(lexer)
-        parser = hmParser(token_stream)
-        tree = parser.root()
-        
-        if parser.getNumberOfSyntaxErrors() == 0:
-            arbresSemantic = visitor.visit(tree)
-            for arbreSemantic in arbresSemantic:
-                arbreDOT = generarArbre(arbreSemantic, {})
-                st.graphviz_chart(arbreDOT)
-
-                taulaSimbolsInferida = {}
-                try:
-                    taulaSimbolsInferida = inferirTipus(arbreSemantic, taulaSimbolsInferida)
-
-                    arbreDOT = generarArbre(arbreSemantic, taulaSimbolsInferida)
-                    st.graphviz_chart(arbreDOT)
-
-                    dataTable2 = createDataTable(taulaSimbolsInferida)
-                    st.table(dataTable2)
-
-                except TypeError as error:
-                    errorMsg = "TypeError: " + str(error)
-                    st.write(errorMsg)
-                
-            taulaSimbolsDefinicions = visitor.taulaSimbolsDefinicions
-            st.session_state["taulaSimbols"] = dumps(taulaSimbolsDefinicions)
-            table.dataframe(createDataTable(taulaSimbolsDefinicions), use_container_width=True)
-                
-        else:
-            st.write(str(parser.getNumberOfSyntaxErrors()) +  'errors de sintaxi.')
-
+        for statement in input.split("\n"):
+            executeAnalizer(statement)
         #st.write(tree.toStringTree(recog=parser))
+
+
 
