@@ -197,7 +197,7 @@ def unify(x: Node, y: Node, subst: dict) -> dict:
         
         return subst
     else:
-        return None
+        raise TypeError(f"{passarArbreDeTipusAString(x, subst)} vs {passarArbreDeTipusAString(y, subst)}")
     
 def unify_variable(v: Node, x: Node, subst: dict) -> dict:
     assert(is_a_variable(v))
@@ -206,7 +206,7 @@ def unify_variable(v: Node, x: Node, subst: dict) -> dict:
     elif is_a_variable(x) and x.simbol in subst:
         return unify(v, subst[x.simbol], subst)
     elif occurs_check(v, x, subst):
-        return None
+        raise TypeError(f"{passarArbreDeTipusAString(v, {})} vs {passarArbreDeTipusAString(x, {})}")
     else:
         return {**subst, v.simbol: x}
 
@@ -308,9 +308,10 @@ if __name__ == "__main__":
     button_stream = st.button(label='fer')
 
     if button_stream:
+        statements = input.split("\n")
+        
         for statement in input.split("\n"):
             executeAnalizer(statement)
-        #st.write(tree.toStringTree(recog=parser))
 
 
 
