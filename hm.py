@@ -32,11 +32,11 @@ class TreeVisitor(hmVisitor):
     def __init__(self, taulaSimbols):
         self.taulaSimbols = [copy.deepcopy(taulaSimbols)]
         self.taulaSimbolsDefinicions = taulaSimbols
-        self.simbolLliure = 'a'
+        self.simbolLliure = 0
 
     def getSimbolLliure(self):
-        lletraActual = self.simbolLliure
-        self.simbolLliure = chr(ord(self.simbolLliure) + 1)
+        lletraActual = f"t{self.simbolLliure}"
+        self.simbolLliure += 1
         return lletraActual
     
     def buscaTaulaSimbols(self, simbol):
@@ -117,7 +117,6 @@ class TreeVisitor(hmVisitor):
         [_, ident, _, expr] = list(ctx.getChildren())
 
         simbol = self.getSimbolLliure()
-        simbolActual = self.simbolLliure
 
         self.taulaSimbols.append({})
         
@@ -126,9 +125,8 @@ class TreeVisitor(hmVisitor):
         arbreIdent = Node(str(ident), [], Node(simbolIdent, [], Buit))
 
         arbreExpr = self.visit(expr)
-        
+
         self.taulaSimbols.pop(0)
-        self.simbolLliure = simbolActual
             
         return Node('λ', [arbreIdent, arbreExpr], Node(simbol, [], Buit)) 
 
@@ -159,27 +157,9 @@ def generarArbre(root):
     return graph
 
 def passarArbreDeTipusAString(root):
-    res = passarArbreDeTipusAStringRec(root)
-    if len(res) > 1:
-        return "(" + res + ")"
-    else:
-        return res
-
-def passarArbreDeTipusAStringRec(root):
     match root:
         case Node('->', [child1, child2], _):
-            textChild1 = ""
-            if child1.children != []:
-                textChild1 = "(" + passarArbreDeTipusAStringRec(child1) + ")"
-            else:
-                textChild1 = passarArbreDeTipusAStringRec(child1)
-            textChild2 = passarArbreDeTipusAStringRec(child2)
-            if len(textChild2) > 1:
-                res = textChild1 + " -> " + "(" + textChild2 + ")"
-            else:
-                res =  textChild1 + " -> " + textChild2
-            return res
-        
+            return f"({passarArbreDeTipusAString(child1)} -> {passarArbreDeTipusAString(child2)})"
         case Node(x, [], _):
             return x
         case _:
@@ -269,6 +249,8 @@ def inferirTipusAplicacio(root, taulaSimbolsInferida):
         except TypeError as error:
             raise error
         
+
+        
 def createDataTable(taulaSimbols):
     columns = ["Tipus"]
     indexes = []
@@ -310,7 +292,7 @@ if __name__ == "__main__":
 
                 taulaSimbolsInferida = {}
                 try:
-                    inferirTipusAplicacio(arbreSemantic, taulaSimbolsInferida)
+                    #inferirTipusAplicacio(arbreSemantic, taulaSimbolsInferida)
                     arbreDOT = generarArbre(arbreSemantic)
                     st.graphviz_chart(arbreDOT)
 
