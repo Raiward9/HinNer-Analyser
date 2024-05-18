@@ -154,10 +154,6 @@ def passarArbreDeTipusAString(root: Node, taulaSimbols: dict) -> str:
                 return passarArbreDeTipusAString(taulaSimbols[x], taulaSimbols)
             
             return x
-   
-
-def is_a_term(root: Node) -> bool:
-    return root.simbol.isupper()
 
 def es_una_variable(root: Node) -> bool:
     if len(root.simbol) >= 2:
@@ -250,7 +246,7 @@ def createDataTable(taulaSimbols):
 
     return pd.DataFrame(data=data, index=indexes, columns=columns)
 
-def executeAnalizer(statement: str):
+def executaAnalitzador(statement: str):
 
     input_stream = InputStream(statement)
     lexer = hmLexer(input_stream)
@@ -305,7 +301,7 @@ if __name__ == "__main__":
         statements = input.split("\n")
         
         for statement in input.split("\n"):
-            executeAnalizer(statement)
+            executaAnalitzador(statement)
 
 
 

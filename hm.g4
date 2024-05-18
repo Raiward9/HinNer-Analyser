@@ -3,8 +3,8 @@ grammar hm;
 root : statement EOF
      ;
 
-statement : expr                        # exprStmt
-          | definicio                   # definicioStmt
+statement : expr                                       # exprStmt
+          | definicio                                  # definicioStmt
           ; 
 
 definicio : expr DOSPUNTS DOSPUNTS tipus
@@ -22,8 +22,8 @@ expr : LPAR expr RPAR                                  # parentesis
      | IDENT                                           # ident
      ;
 
-abstraccio: SLASH IDENT ARROW expr      # funcioAnonima
-          | LPAR SUMA RPAR              # operadorInfix
+abstraccio: SLASH IDENT ARROW expr                     # funcioAnonima
+          | LPAR SUMA RPAR                             # operadorInfix
           ;
 
 ARROW          : '->';
