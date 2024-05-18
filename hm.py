@@ -11,12 +11,6 @@ from pickle import dumps, loads
 import pandas as pd
 import copy
 
-# utilitzar st.session_state
-# per poder guardar, caldra serialitzar els valors
-# usar llibreria pickle de python
-# aquesta llibreria te dumps -> guardar, loads -> recuperar
-# abans de que s'acabi el codi, fer un dumps, i abans de fer el parser, fer un loads
-
 class Buit:
     pass
 
