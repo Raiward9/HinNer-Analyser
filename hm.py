@@ -159,59 +159,59 @@ def passarArbreDeTipusAString(root: Node, taulaSimbols: dict) -> str:
 def is_a_term(root: Node) -> bool:
     return root.simbol.isupper()
 
-def is_a_variable(root: Node) -> bool:
+def es_una_variable(root: Node) -> bool:
     if len(root.simbol) >= 2:
         return root.simbol[0] == "t" and root.simbol[1:].isnumeric()
     else:
         return False 
     
-def are_equal(x: Node, y: Node) -> bool:
+def son_iguals(x: Node, y: Node) -> bool:
     if len(x.children) != len(y.children):
         return False
     elif x.children == []:
         return x.simbol == y.simbol
     else:
-        return x.simbol == y.simbol and are_equal(x.children[0], y.children[0]) and are_equal(x.children[1], y.children[1])
+        return x.simbol == y.simbol and son_iguals(x.children[0], y.children[0]) and son_iguals(x.children[1], y.children[1])
     
-def is_complex_type(root):
+def es_tipus_complex(root):
     return root.simbol == "->"
 
-def unify(x: Node, y: Node, subst: dict) -> dict:
+def unificar(x: Node, y: Node, subst: dict) -> dict:
     if subst is None:
         return None
-    elif are_equal(x,y):
+    elif son_iguals(x,y):
         return subst
-    elif is_a_variable(x):
-        return unify_variable(x, y, subst)
-    elif is_a_variable(y):
-        return unify_variable(y, x, subst)
-    elif is_complex_type(x) and is_complex_type(y):
+    elif es_una_variable(x):
+        return unificar_variable(x, y, subst)
+    elif es_una_variable(y):
+        return unificar_variable(y, x, subst)
+    elif es_tipus_complex(x) and es_tipus_complex(y):
         for childInd in range(2):
-            subst = unify(x.children[childInd], y.children[childInd], subst)
+            subst = unificar(x.children[childInd], y.children[childInd], subst)
         
         return subst
     else:
         raise TypeError(f"{passarArbreDeTipusAString(x, subst)} vs {passarArbreDeTipusAString(y, subst)}")
     
-def unify_variable(v: Node, x: Node, subst: dict) -> dict:
-    assert(is_a_variable(v))
+def unificar_variable(v: Node, x: Node, subst: dict) -> dict:
+    assert(es_una_variable(v))
     if v.simbol in subst:
-        return unify(subst[v.simbol], x, subst)
-    elif is_a_variable(x) and x.simbol in subst:
-        return unify(v, subst[x.simbol], subst)
-    elif occurs_check(v, x, subst):
+        return unificar(subst[v.simbol], x, subst)
+    elif es_una_variable(x) and x.simbol in subst:
+        return unificar(v, subst[x.simbol], subst)
+    elif esta_una_contenida_a_altre(v, x, subst):
         raise TypeError(f"{passarArbreDeTipusAString(v, {})} vs {passarArbreDeTipusAString(x, {})}")
     else:
         return {**subst, v.simbol: x}
 
-def occurs_check(v: Node, term: Node, subst: dict) -> bool:
-    assert(is_a_variable(v))
-    if are_equal(v, term):
+def esta_una_contenida_a_altre(v: Node, term: Node, subst: dict) -> bool:
+    assert(es_una_variable(v))
+    if son_iguals(v, term):
         return True
-    elif is_a_variable(term) and term.simbol in subst:
-        return occurs_check(v, subst[term.simbol], subst)
-    elif is_complex_type(term):
-        return any(occurs_check(v, child, subst) for child in term.children)
+    elif es_una_variable(term) and term.simbol in subst:
+        return esta_una_contenida_a_altre(v, subst[term.simbol], subst)
+    elif es_tipus_complex(term):
+        return any(esta_una_contenida_a_altre(v, child, subst) for child in term.children)
     else:
         return False
 
@@ -223,7 +223,7 @@ def inferirTipus(root, taulaSimbolsInferida):
                 tipusRealChild1 = child1.tipus
                 tipusInferitChild1 = Node("->", [child2.tipus, root.tipus], Buit)
 
-                taulaSimbolsInferida = unify(tipusRealChild1, tipusInferitChild1, taulaSimbolsInferida)
+                taulaSimbolsInferida = unificar(tipusRealChild1, tipusInferitChild1, taulaSimbolsInferida)
 
                 taulaSimbolsInferida = inferirTipus(child1, taulaSimbolsInferida)
                 taulaSimbolsInferida = inferirTipus(child2, taulaSimbolsInferida)
@@ -232,7 +232,7 @@ def inferirTipus(root, taulaSimbolsInferida):
                 tipusRealRoot = root.tipus
                 tipusInferitRoot = Node("->", [child1.tipus, child2.tipus], Buit)
 
-                taulaSimbolsInferida = unify(tipusRealRoot, tipusInferitRoot, taulaSimbolsInferida)
+                taulaSimbolsInferida = unificar(tipusRealRoot, tipusInferitRoot, taulaSimbolsInferida)
 
                 taulaSimbolsInferida = inferirTipus(child1, taulaSimbolsInferida)
                 taulaSimbolsInferida = inferirTipus(child2, taulaSimbolsInferida)
