@@ -1,10 +1,26 @@
 <h1>HinNer Analyser</h1>
 <p>The following code makes inferences about the type of a simplified version of Haskell expressions using ANTLR. Here are some exemples of the types of expressions accepted and its results:</p>
 <h3>Example 1:</h3>
+<p>In this example it is used only one expression.</p>
 
 ![plot](./images/input1.png)
+
+<p>Following is the tree previous to applying the inference algorithm.</p>
+
 ![plot](./images/typeTree1.png)
+
+<p>This is the result with the infered types:</p>
+
 ![plot](./images/inferedTreeType1.png)
+
+<h3>Example 2:</h3>
+<p>Some definitions will be added previous to the expression.</p>
+
+![plot](./images/input2.png)
+
+![plot](./images/typeTree2.png)
+
+![plot](./images/inferedTreeType2.png)
 
 <h2>Installation</h2>
 <p>Execute the file named installSetup.sh</p>
