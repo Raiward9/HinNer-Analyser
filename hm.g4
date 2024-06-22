@@ -4,35 +4,35 @@ root : statement EOF
      ;
 
 statement : expr                                       # exprStmt
-          | definicio                                  # definicioStmt
+          | definition                                 # definitionStmt
           ; 
 
-definicio : expr DOSPUNTS DOSPUNTS tipus
+definition : expr TWOPOINTS TWOPOINTS type
           ;
 
-tipus : TIPUS                                          # tipusSimple
-      | <assoc=right> tipus ARROW tipus                # tipusAssociatiu
-      | LPAR tipus RPAR                                # tipusParentesis
+type : TYPE                                           # typeSimple
+      | <assoc=right> type ARROW type                 # typeAssociative
+      | LPAR type RPAR                                # typeParenthesis
       ;
 
-expr : LPAR expr RPAR                                  # parentesis                 
-     | expr expr                                       # aplicacioExpr
-     | abstraccio                                      # abstraccioExpr
-     | NUM                                             # numero
+expr : LPAR expr RPAR                                  # parenthesis                 
+     | expr expr                                       # aplicationExpr
+     | abstraction                                     # abstractionExpr
+     | NUM                                             # number
      | IDENT                                           # ident
      ;
 
-abstraccio: SLASH IDENT ARROW expr                     # funcioAnonima
-          | LPAR SUMA RPAR                             # operadorInfix
-          ;
+abstraction: SLASH IDENT ARROW expr                    # anonymousFunction
+           | LPAR SUM RPAR                             # infixOperator
+           ;
 
 ARROW          : '->';
 SLASH          : '\\';
-DOSPUNTS       : ':';
-SUMA           : '+';
+TWOPOINTS      : ':';
+SUM            : '+';
 LPAR           : '(';
 RPAR           : ')';
 NUM            : [0-9]+ ;
-TIPUS          : [A-Z]+;
+TYPE           : [A-Z]+;
 IDENT          : [a-zA-Z] ([a-zA-Z] | [0-9])*;
 WS             : [ \t\n\r]+ -> skip ;

@@ -40,12 +40,12 @@ class hmLexer(Lexer):
 
     ARROW = 1
     SLASH = 2
-    DOSPUNTS = 3
-    SUMA = 4
+    TWOPOINTS = 3
+    SUM = 4
     LPAR = 5
     RPAR = 6
     NUM = 7
-    TIPUS = 8
+    TYPE = 8
     IDENT = 9
     WS = 10
 
@@ -57,11 +57,11 @@ class hmLexer(Lexer):
             "'->'", "'\\'", "':'", "'+'", "'('", "')'" ]
 
     symbolicNames = [ "<INVALID>",
-            "ARROW", "SLASH", "DOSPUNTS", "SUMA", "LPAR", "RPAR", "NUM", 
-            "TIPUS", "IDENT", "WS" ]
+            "ARROW", "SLASH", "TWOPOINTS", "SUM", "LPAR", "RPAR", "NUM", 
+            "TYPE", "IDENT", "WS" ]
 
-    ruleNames = [ "ARROW", "SLASH", "DOSPUNTS", "SUMA", "LPAR", "RPAR", 
-                  "NUM", "TIPUS", "IDENT", "WS" ]
+    ruleNames = [ "ARROW", "SLASH", "TWOPOINTS", "SUM", "LPAR", "RPAR", 
+                  "NUM", "TYPE", "IDENT", "WS" ]
 
     grammarFileName = "hm.g4"
 

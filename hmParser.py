@@ -45,27 +45,27 @@ class hmParser ( Parser ):
 
     literalNames = [ "<INVALID>", "'->'", "'\\'", "':'", "'+'", "'('", "')'" ]
 
-    symbolicNames = [ "<INVALID>", "ARROW", "SLASH", "DOSPUNTS", "SUMA", 
-                      "LPAR", "RPAR", "NUM", "TIPUS", "IDENT", "WS" ]
+    symbolicNames = [ "<INVALID>", "ARROW", "SLASH", "TWOPOINTS", "SUM", 
+                      "LPAR", "RPAR", "NUM", "TYPE", "IDENT", "WS" ]
 
     RULE_root = 0
     RULE_statement = 1
-    RULE_definicio = 2
-    RULE_tipus = 3
+    RULE_definition = 2
+    RULE_type = 3
     RULE_expr = 4
-    RULE_abstraccio = 5
+    RULE_abstraction = 5
 
-    ruleNames =  [ "root", "statement", "definicio", "tipus", "expr", "abstraccio" ]
+    ruleNames =  [ "root", "statement", "definition", "type", "expr", "abstraction" ]
 
     EOF = Token.EOF
     ARROW=1
     SLASH=2
-    DOSPUNTS=3
-    SUMA=4
+    TWOPOINTS=3
+    SUM=4
     LPAR=5
     RPAR=6
     NUM=7
-    TIPUS=8
+    TYPE=8
     IDENT=9
     WS=10
 
@@ -157,19 +157,19 @@ class hmParser ( Parser ):
                 return visitor.visitChildren(self)
 
 
-    class DefinicioStmtContext(StatementContext):
+    class DefinitionStmtContext(StatementContext):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.StatementContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
-        def definicio(self):
-            return self.getTypedRuleContext(hmParser.DefinicioContext,0)
+        def definition(self):
+            return self.getTypedRuleContext(hmParser.DefinitionContext,0)
 
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitDefinicioStmt" ):
-                return visitor.visitDefinicioStmt(self)
+            if hasattr( visitor, "visitDefinitionStmt" ):
+                return visitor.visitDefinitionStmt(self)
             else:
                 return visitor.visitChildren(self)
 
@@ -191,10 +191,10 @@ class hmParser ( Parser ):
                 pass
 
             elif la_ == 2:
-                localctx = hmParser.DefinicioStmtContext(self, localctx)
+                localctx = hmParser.DefinitionStmtContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
                 self.state = 16
-                self.definicio()
+                self.definition()
                 pass
 
 
@@ -207,7 +207,7 @@ class hmParser ( Parser ):
         return localctx
 
 
-    class DefinicioContext(ParserRuleContext):
+    class DefinitionContext(ParserRuleContext):
         __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
@@ -218,42 +218,42 @@ class hmParser ( Parser ):
             return self.getTypedRuleContext(hmParser.ExprContext,0)
 
 
-        def DOSPUNTS(self, i:int=None):
+        def TWOPOINTS(self, i:int=None):
             if i is None:
-                return self.getTokens(hmParser.DOSPUNTS)
+                return self.getTokens(hmParser.TWOPOINTS)
             else:
-                return self.getToken(hmParser.DOSPUNTS, i)
+                return self.getToken(hmParser.TWOPOINTS, i)
 
-        def tipus(self):
-            return self.getTypedRuleContext(hmParser.TipusContext,0)
+        def type_(self):
+            return self.getTypedRuleContext(hmParser.TypeContext,0)
 
 
         def getRuleIndex(self):
-            return hmParser.RULE_definicio
+            return hmParser.RULE_definition
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitDefinicio" ):
-                return visitor.visitDefinicio(self)
+            if hasattr( visitor, "visitDefinition" ):
+                return visitor.visitDefinition(self)
             else:
                 return visitor.visitChildren(self)
 
 
 
 
-    def definicio(self):
+    def definition(self):
 
-        localctx = hmParser.DefinicioContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 4, self.RULE_definicio)
+        localctx = hmParser.DefinitionContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 4, self.RULE_definition)
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 19
             self.expr(0)
             self.state = 20
-            self.match(hmParser.DOSPUNTS)
+            self.match(hmParser.TWOPOINTS)
             self.state = 21
-            self.match(hmParser.DOSPUNTS)
+            self.match(hmParser.TWOPOINTS)
             self.state = 22
-            self.tipus(0)
+            self.type_(0)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -263,7 +263,7 @@ class hmParser ( Parser ):
         return localctx
 
 
-    class TipusContext(ParserRuleContext):
+    class TypeContext(ParserRuleContext):
         __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
@@ -272,101 +272,101 @@ class hmParser ( Parser ):
 
 
         def getRuleIndex(self):
-            return hmParser.RULE_tipus
+            return hmParser.RULE_type
 
      
         def copyFrom(self, ctx:ParserRuleContext):
             super().copyFrom(ctx)
 
 
-    class TipusAssociatiuContext(TipusContext):
+    class TypeParenthesisContext(TypeContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.TipusContext
-            super().__init__(parser)
-            self.copyFrom(ctx)
-
-        def tipus(self, i:int=None):
-            if i is None:
-                return self.getTypedRuleContexts(hmParser.TipusContext)
-            else:
-                return self.getTypedRuleContext(hmParser.TipusContext,i)
-
-        def ARROW(self):
-            return self.getToken(hmParser.ARROW, 0)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitTipusAssociatiu" ):
-                return visitor.visitTipusAssociatiu(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class TipusParentesisContext(TipusContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.TipusContext
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.TypeContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def LPAR(self):
             return self.getToken(hmParser.LPAR, 0)
-        def tipus(self):
-            return self.getTypedRuleContext(hmParser.TipusContext,0)
+        def type_(self):
+            return self.getTypedRuleContext(hmParser.TypeContext,0)
 
         def RPAR(self):
             return self.getToken(hmParser.RPAR, 0)
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitTipusParentesis" ):
-                return visitor.visitTipusParentesis(self)
+            if hasattr( visitor, "visitTypeParenthesis" ):
+                return visitor.visitTypeParenthesis(self)
             else:
                 return visitor.visitChildren(self)
 
 
-    class TipusSimpleContext(TipusContext):
+    class TypeSimpleContext(TypeContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.TipusContext
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.TypeContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
-        def TIPUS(self):
-            return self.getToken(hmParser.TIPUS, 0)
+        def TYPE(self):
+            return self.getToken(hmParser.TYPE, 0)
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitTipusSimple" ):
-                return visitor.visitTipusSimple(self)
+            if hasattr( visitor, "visitTypeSimple" ):
+                return visitor.visitTypeSimple(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class TypeAssociativeContext(TypeContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.TypeContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def type_(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(hmParser.TypeContext)
+            else:
+                return self.getTypedRuleContext(hmParser.TypeContext,i)
+
+        def ARROW(self):
+            return self.getToken(hmParser.ARROW, 0)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTypeAssociative" ):
+                return visitor.visitTypeAssociative(self)
             else:
                 return visitor.visitChildren(self)
 
 
 
-    def tipus(self, _p:int=0):
+    def type_(self, _p:int=0):
         _parentctx = self._ctx
         _parentState = self.state
-        localctx = hmParser.TipusContext(self, self._ctx, _parentState)
+        localctx = hmParser.TypeContext(self, self._ctx, _parentState)
         _prevctx = localctx
         _startState = 6
-        self.enterRecursionRule(localctx, 6, self.RULE_tipus, _p)
+        self.enterRecursionRule(localctx, 6, self.RULE_type, _p)
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 30
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [8]:
-                localctx = hmParser.TipusSimpleContext(self, localctx)
+                localctx = hmParser.TypeSimpleContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
 
                 self.state = 25
-                self.match(hmParser.TIPUS)
+                self.match(hmParser.TYPE)
                 pass
             elif token in [5]:
-                localctx = hmParser.TipusParentesisContext(self, localctx)
+                localctx = hmParser.TypeParenthesisContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
                 self.state = 26
                 self.match(hmParser.LPAR)
                 self.state = 27
-                self.tipus(0)
+                self.type_(0)
                 self.state = 28
                 self.match(hmParser.RPAR)
                 pass
@@ -382,8 +382,8 @@ class hmParser ( Parser ):
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
-                    localctx = hmParser.TipusAssociatiuContext(self, hmParser.TipusContext(self, _parentctx, _parentState))
-                    self.pushNewRecursionContext(localctx, _startState, self.RULE_tipus)
+                    localctx = hmParser.TypeAssociativeContext(self, hmParser.TypeContext(self, _parentctx, _parentState))
+                    self.pushNewRecursionContext(localctx, _startState, self.RULE_type)
                     self.state = 32
                     if not self.precpred(self._ctx, 2):
                         from antlr4.error.Errors import FailedPredicateException
@@ -391,7 +391,7 @@ class hmParser ( Parser ):
                     self.state = 33
                     self.match(hmParser.ARROW)
                     self.state = 34
-                    self.tipus(2) 
+                    self.type_(2) 
                 self.state = 39
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,2,self._ctx)
@@ -421,48 +421,7 @@ class hmParser ( Parser ):
             super().copyFrom(ctx)
 
 
-    class ParentesisContext(ExprContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.ExprContext
-            super().__init__(parser)
-            self.copyFrom(ctx)
-
-        def LPAR(self):
-            return self.getToken(hmParser.LPAR, 0)
-        def expr(self):
-            return self.getTypedRuleContext(hmParser.ExprContext,0)
-
-        def RPAR(self):
-            return self.getToken(hmParser.RPAR, 0)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitParentesis" ):
-                return visitor.visitParentesis(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class AplicacioExprContext(ExprContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.ExprContext
-            super().__init__(parser)
-            self.copyFrom(ctx)
-
-        def expr(self, i:int=None):
-            if i is None:
-                return self.getTypedRuleContexts(hmParser.ExprContext)
-            else:
-                return self.getTypedRuleContext(hmParser.ExprContext,i)
-
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitAplicacioExpr" ):
-                return visitor.visitAplicacioExpr(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class NumeroContext(ExprContext):
+    class NumberContext(ExprContext):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.ExprContext
             super().__init__(parser)
@@ -472,25 +431,8 @@ class hmParser ( Parser ):
             return self.getToken(hmParser.NUM, 0)
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitNumero" ):
-                return visitor.visitNumero(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class AbstraccioExprContext(ExprContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.ExprContext
-            super().__init__(parser)
-            self.copyFrom(ctx)
-
-        def abstraccio(self):
-            return self.getTypedRuleContext(hmParser.AbstraccioContext,0)
-
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitAbstraccioExpr" ):
-                return visitor.visitAbstraccioExpr(self)
+            if hasattr( visitor, "visitNumber" ):
+                return visitor.visitNumber(self)
             else:
                 return visitor.visitChildren(self)
 
@@ -511,6 +453,64 @@ class hmParser ( Parser ):
                 return visitor.visitChildren(self)
 
 
+    class AbstractionExprContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.ExprContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def abstraction(self):
+            return self.getTypedRuleContext(hmParser.AbstractionContext,0)
+
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAbstractionExpr" ):
+                return visitor.visitAbstractionExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class AplicationExprContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.ExprContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def expr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(hmParser.ExprContext)
+            else:
+                return self.getTypedRuleContext(hmParser.ExprContext,i)
+
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAplicationExpr" ):
+                return visitor.visitAplicationExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class ParenthesisContext(ExprContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.ExprContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def LPAR(self):
+            return self.getToken(hmParser.LPAR, 0)
+        def expr(self):
+            return self.getTypedRuleContext(hmParser.ExprContext,0)
+
+        def RPAR(self):
+            return self.getToken(hmParser.RPAR, 0)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitParenthesis" ):
+                return visitor.visitParenthesis(self)
+            else:
+                return visitor.visitChildren(self)
+
+
 
     def expr(self, _p:int=0):
         _parentctx = self._ctx
@@ -525,7 +525,7 @@ class hmParser ( Parser ):
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,3,self._ctx)
             if la_ == 1:
-                localctx = hmParser.ParentesisContext(self, localctx)
+                localctx = hmParser.ParenthesisContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
 
@@ -538,15 +538,15 @@ class hmParser ( Parser ):
                 pass
 
             elif la_ == 2:
-                localctx = hmParser.AbstraccioExprContext(self, localctx)
+                localctx = hmParser.AbstractionExprContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
                 self.state = 45
-                self.abstraccio()
+                self.abstraction()
                 pass
 
             elif la_ == 3:
-                localctx = hmParser.NumeroContext(self, localctx)
+                localctx = hmParser.NumberContext(self, localctx)
                 self._ctx = localctx
                 _prevctx = localctx
                 self.state = 46
@@ -571,7 +571,7 @@ class hmParser ( Parser ):
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
-                    localctx = hmParser.AplicacioExprContext(self, hmParser.ExprContext(self, _parentctx, _parentState))
+                    localctx = hmParser.AplicationExprContext(self, hmParser.ExprContext(self, _parentctx, _parentState))
                     self.pushNewRecursionContext(localctx, _startState, self.RULE_expr)
                     self.state = 50
                     if not self.precpred(self._ctx, 4):
@@ -592,7 +592,7 @@ class hmParser ( Parser ):
         return localctx
 
 
-    class AbstraccioContext(ParserRuleContext):
+    class AbstractionContext(ParserRuleContext):
         __slots__ = 'parser'
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
@@ -601,7 +601,7 @@ class hmParser ( Parser ):
 
 
         def getRuleIndex(self):
-            return hmParser.RULE_abstraccio
+            return hmParser.RULE_abstraction
 
      
         def copyFrom(self, ctx:ParserRuleContext):
@@ -609,29 +609,9 @@ class hmParser ( Parser ):
 
 
 
-    class OperadorInfixContext(AbstraccioContext):
+    class AnonymousFunctionContext(AbstractionContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.AbstraccioContext
-            super().__init__(parser)
-            self.copyFrom(ctx)
-
-        def LPAR(self):
-            return self.getToken(hmParser.LPAR, 0)
-        def SUMA(self):
-            return self.getToken(hmParser.SUMA, 0)
-        def RPAR(self):
-            return self.getToken(hmParser.RPAR, 0)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitOperadorInfix" ):
-                return visitor.visitOperadorInfix(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-    class FuncioAnonimaContext(AbstraccioContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.AbstraccioContext
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.AbstractionContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
@@ -646,23 +626,43 @@ class hmParser ( Parser ):
 
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFuncioAnonima" ):
-                return visitor.visitFuncioAnonima(self)
+            if hasattr( visitor, "visitAnonymousFunction" ):
+                return visitor.visitAnonymousFunction(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class InfixOperatorContext(AbstractionContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a hmParser.AbstractionContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def LPAR(self):
+            return self.getToken(hmParser.LPAR, 0)
+        def SUM(self):
+            return self.getToken(hmParser.SUM, 0)
+        def RPAR(self):
+            return self.getToken(hmParser.RPAR, 0)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitInfixOperator" ):
+                return visitor.visitInfixOperator(self)
             else:
                 return visitor.visitChildren(self)
 
 
 
-    def abstraccio(self):
+    def abstraction(self):
 
-        localctx = hmParser.AbstraccioContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 10, self.RULE_abstraccio)
+        localctx = hmParser.AbstractionContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 10, self.RULE_abstraction)
         try:
             self.state = 64
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [2]:
-                localctx = hmParser.FuncioAnonimaContext(self, localctx)
+                localctx = hmParser.AnonymousFunctionContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
                 self.state = 57
                 self.match(hmParser.SLASH)
@@ -674,12 +674,12 @@ class hmParser ( Parser ):
                 self.expr(0)
                 pass
             elif token in [5]:
-                localctx = hmParser.OperadorInfixContext(self, localctx)
+                localctx = hmParser.InfixOperatorContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
                 self.state = 61
                 self.match(hmParser.LPAR)
                 self.state = 62
-                self.match(hmParser.SUMA)
+                self.match(hmParser.SUM)
                 self.state = 63
                 self.match(hmParser.RPAR)
                 pass
@@ -699,7 +699,7 @@ class hmParser ( Parser ):
     def sempred(self, localctx:RuleContext, ruleIndex:int, predIndex:int):
         if self._predicates == None:
             self._predicates = dict()
-        self._predicates[3] = self.tipus_sempred
+        self._predicates[3] = self.type_sempred
         self._predicates[4] = self.expr_sempred
         pred = self._predicates.get(ruleIndex, None)
         if pred is None:
@@ -707,7 +707,7 @@ class hmParser ( Parser ):
         else:
             return pred(localctx, predIndex)
 
-    def tipus_sempred(self, localctx:TipusContext, predIndex:int):
+    def type_sempred(self, localctx:TypeContext, predIndex:int):
             if predIndex == 0:
                 return self.precpred(self._ctx, 2)
          

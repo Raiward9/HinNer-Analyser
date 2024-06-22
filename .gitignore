@@ -1,0 +1,6 @@
+./__pycache__
+.env
+./hm.interp
+./hm.tokens
+./hmLexer.interp
+./hmLexer.tokens

@@ -19,48 +19,33 @@ class hmVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by hmParser#definicioStmt.
-    def visitDefinicioStmt(self, ctx:hmParser.DefinicioStmtContext):
+    # Visit a parse tree produced by hmParser#definitionStmt.
+    def visitDefinitionStmt(self, ctx:hmParser.DefinitionStmtContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by hmParser#definicio.
-    def visitDefinicio(self, ctx:hmParser.DefinicioContext):
+    # Visit a parse tree produced by hmParser#definition.
+    def visitDefinition(self, ctx:hmParser.DefinitionContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by hmParser#tipusAssociatiu.
-    def visitTipusAssociatiu(self, ctx:hmParser.TipusAssociatiuContext):
+    # Visit a parse tree produced by hmParser#typeParenthesis.
+    def visitTypeParenthesis(self, ctx:hmParser.TypeParenthesisContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by hmParser#tipusParentesis.
-    def visitTipusParentesis(self, ctx:hmParser.TipusParentesisContext):
+    # Visit a parse tree produced by hmParser#typeSimple.
+    def visitTypeSimple(self, ctx:hmParser.TypeSimpleContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by hmParser#tipusSimple.
-    def visitTipusSimple(self, ctx:hmParser.TipusSimpleContext):
+    # Visit a parse tree produced by hmParser#typeAssociative.
+    def visitTypeAssociative(self, ctx:hmParser.TypeAssociativeContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by hmParser#parentesis.
-    def visitParentesis(self, ctx:hmParser.ParentesisContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by hmParser#aplicacioExpr.
-    def visitAplicacioExpr(self, ctx:hmParser.AplicacioExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by hmParser#numero.
-    def visitNumero(self, ctx:hmParser.NumeroContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by hmParser#abstraccioExpr.
-    def visitAbstraccioExpr(self, ctx:hmParser.AbstraccioExprContext):
+    # Visit a parse tree produced by hmParser#number.
+    def visitNumber(self, ctx:hmParser.NumberContext):
         return self.visitChildren(ctx)
 
 
@@ -69,13 +54,28 @@ class hmVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by hmParser#funcioAnonima.
-    def visitFuncioAnonima(self, ctx:hmParser.FuncioAnonimaContext):
+    # Visit a parse tree produced by hmParser#abstractionExpr.
+    def visitAbstractionExpr(self, ctx:hmParser.AbstractionExprContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by hmParser#operadorInfix.
-    def visitOperadorInfix(self, ctx:hmParser.OperadorInfixContext):
+    # Visit a parse tree produced by hmParser#aplicationExpr.
+    def visitAplicationExpr(self, ctx:hmParser.AplicationExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by hmParser#parenthesis.
+    def visitParenthesis(self, ctx:hmParser.ParenthesisContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by hmParser#anonymousFunction.
+    def visitAnonymousFunction(self, ctx:hmParser.AnonymousFunctionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by hmParser#infixOperator.
+    def visitInfixOperator(self, ctx:hmParser.InfixOperatorContext):
         return self.visitChildren(ctx)
 
 
