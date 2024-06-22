@@ -19,6 +19,6 @@
     <li>Click the button "do".</li>
 </ol>
 
-<h2>Quirks about the code</h2>
+<h2>References</h2>
 <p>The inference mecanism was created adapting the code about unfication equations that can be find in the following blog:</p>
 https://eli.thegreenplace.net/2018/unification/ <br></br>
