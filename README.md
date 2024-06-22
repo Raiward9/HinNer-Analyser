@@ -1,5 +1,13 @@
 <h1>HinNer Analyser</h1>
-<p>The following code makes inferences about types of a simplified version of Haskell grammar using ANTLR. Here are some exemples of the types of expressions accepted and its results:</p>
+<p>The following code makes inferences about the type of a simplified version of Haskell expressions using ANTLR. Here are some exemples of the types of expressions accepted and its results:</p>
+<h3>Example 1:</h3>
+![plot](./images/input1.png)
+![plot](./images/typeTree1.png)
+![plot](./images/inferedTreeType1.png)
+<h2>Installation</h2>
+<p>Execute the file named installSetup.sh</p>
+<h2>Execution</h2>
+<p>Execute the file named execute.sh</p>
 <h2>Things to avoid and take into account before executing the program</h2>
 <h3>Avoid</h3>
 <ul>
@@ -15,7 +23,7 @@
 </ul>
 <h2>Instruction of use</h2>
 <ol>
-    <li>Add an statement (definition or expresssion) per line in the textarea.</li>
+    <li>Add an statement (definition or expression) per line in the textarea.</li>
     <li>Click the button "do".</li>
 </ol>
 
